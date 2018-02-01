@@ -42,7 +42,7 @@ export class CommonService {
  * @param name 
  */
   PlatformsExists(name: string): boolean {
-    return false
+    return true
   }
   /**
    * 获取语言
@@ -266,7 +266,7 @@ export class CommonService {
     if (title == null || title == '') {
       title = this.translate.instant("public.title");
     }
-
+    console.log(msg)
     const initialState = {
       list: [
         msg.replace(/\\r\\n/g, "<br />")
@@ -447,13 +447,16 @@ export class CommonService {
 
   Confirm(title, message, OkHandler, CancelHandler, OkText = "确定", ChancelText = "取消",inputs=[]) {
 
-
     let modalRef = this.modalService.show(ModalConfirmPage, { class: 'modal-sm' });
     modalRef.content.message=message
-    modalRef.content.OkText=ChancelText
+    modalRef.content.OkText=OkText
     modalRef.content.ChancelText=ChancelText
     modalRef.content.inputs=inputs
-    
+    if(inputs.length>0){
+      inputs.forEach(element => {
+        modalRef.content.bean[element.name]=element.value
+      });
+    }
     modalRef.content.OkHandler=(x)=>{
       modalRef.hide()
       OkHandler(x)

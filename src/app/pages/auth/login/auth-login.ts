@@ -7,7 +7,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Config as Cif } from "../../../@core/Classes/Config";
 import { TranslateService } from '@ngx-translate/core'
 import { concat } from 'rxjs/observable/concat';
-
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'auth-login',
@@ -36,7 +36,7 @@ export class AuthLoginPage {
         private toPostService: ToPostService,
         private formBuilder: FormBuilder,
         private translate: TranslateService,
-
+        private router: Router,
     ) {
 
         let userAndPwdListStr = AppGlobal.CooksGet("userAndPwdList")
@@ -118,19 +118,22 @@ export class AuthLoginPage {
 
         this.commonService.showLoading()
         this.toPostService.Post("auth/UserLogin", this.user).then((res: any) => {
+            this.commonService.hideLoading()
             if (res == null) {
                 this.commonService.hint(this.commonService.LanguageStr("public.LoginError"))
                 return false;
             }
-            if (res.access_token) {
+            if (res.IsSuccess) {
                 //保存用户名，仅仅用于在推送消息的时候，检测该消息是否对该用户有效，tabs.ts
                 AppGlobal.CooksSet("loginName", this.userForm.value.loginName)
-                AppGlobal.SetToken(res.access_token);
-                AppGlobal.SetProperty(null); //保存物业
+                AppGlobal.SetToken(res.Code);
+                AppGlobal.SetProperty(res.Data)
+                this.router.navigate(['/pages']);
+
                 return true
             }
             else {
-                this.commonService.hint(res);
+                this.commonService.hint(res.Msg);
                 return false
             };
         }, (err) => {
@@ -150,45 +153,25 @@ export class AuthLoginPage {
             this.isOpen = true;
             return;
         }
-
-        this.commonService.Confirm(11,22,(x)=>{
-            
-            console.log("Ok")
-            console.log(x)
-        },(y)=>{
-            console.log("cancal")
-        })
-
-        // let alert = this.alertCtrl.create({
-        //     title: '修改API连接地址',
-        //     inputs: [
-        //         {
-        //             name: 'apiUrl',
-        //             value: Cif.api,
-        //             placeholder: 'API连接地址'
-        //         }
-        //     ],
-        //     buttons: [
-        //         {
-        //             text: '初始值',
-        //             role: 'cancel',
-        //             handler: data => {
-        //                 Cif.api = Cif._api
-        //                 Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
-        //             }
-        //         },
-        //         {
-        //             text: '确认',
-        //             handler: data => {
-        //                 AppGlobal.CooksSet('apiUrl', data.apiUrl);
-        //                 Cif.api = data.apiUrl
-        //                 Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
-        //                 console.log("imgUrl:" + Cif.imgUrl);
-        //                 console.log("api:" + Cif.api);
-        //             }
-        //         }
-        //     ]
-        // });
-        // alert.present();
+        this.commonService.Confirm("配置接口", "配置接口", (x) => {
+            Cif.api = Cif._api
+            Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+            console.log("imgUrl:" + Cif.imgUrl);
+            console.log("api:" + Cif.api);
+        }, (data) => {
+            AppGlobal.CooksSet('apiUrl', data.apiUrl);
+            Cif.api = data.apiUrl
+            Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+            console.log("imgUrl:" + Cif.imgUrl);
+            console.log("api:" + Cif.api);
+        }, "初始值", "确认",
+            [
+                {
+                    name: 'apiUrl',
+                    value: Cif.api,
+                    placeholder: 'API连接地址'
+                }
+            ]
+        )
     }
 }

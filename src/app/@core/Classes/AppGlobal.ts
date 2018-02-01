@@ -57,8 +57,8 @@ export class AppGlobal {
       this.SetPropertyId(null)
       return NgXCookies.setCookie('Property', null)
     } else {
-      this.SetPropertyId(property.PropertyId)
-      console.log("保存物业：")
+      this.SetPropertyId(property.ID)
+      console.log("保存特征：")
       console.log(property)
       return NgXCookies.setCookie('Property', JSON.stringify(property));
     }
@@ -77,7 +77,7 @@ export class AppGlobal {
     return tmp;
   }
   public static SetPropertyId(propertyId): any {
-    console.log("保存物业ID：" + propertyId)
+    console.log("保存特征ID：" + propertyId)
     return NgXCookies.setCookie('PropertyId', propertyId);
   }
   public static GetPropertyId(): any {

@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
     <p>{{ message }}</p>
     <ng-container *ngFor="let item of inputs">
         <div class="input-group" >
-            <input [(ngModel)]="bean[item.name]" type="text" placeholder="{{item.placeholder}}" class="form-control"/>
+            <input [(ngModel)]="bean[item.name]" value="123445" type="text" placeholder="{{item.placeholder}}" class="form-control"/>
         </div>
     </ng-container>
   </div>
@@ -24,20 +24,13 @@ export class ModalConfirmPage {
     message: string;
     OkHandler: any;
     CancelHandler: any
-    inputs= [
-        {
-          name: 'apiUrl',
-          value: "",
-          placeholder: 'API连接地址'
-        }
-      ]
+    inputs= []
     bean:any={}
     constructor() { }
     confirm(): void {
         this.OkHandler(this.bean);
     }
-
     decline(): void {
-        this.CancelHandler(null);
+        this.CancelHandler(this.bean);
     }
 }

@@ -2,6 +2,8 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppTranslationModule } from '../app.translation.module';
+
 
 import {
   NbActionsModule,
@@ -15,6 +17,7 @@ import {
   NbThemeModule,
   NbUserModule,
   NbCheckboxModule,
+  
 } from '@nebular/theme';
 
 import {
@@ -35,7 +38,12 @@ import {
 import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 
-const BASE_MODULES = [CommonModule, FormsModule, ReactiveFormsModule];
+const BASE_MODULES = [
+  CommonModule, 
+  FormsModule, 
+  ReactiveFormsModule,
+  AppTranslationModule
+];
 
 const NB_MODULES = [
   NbCardModule,
