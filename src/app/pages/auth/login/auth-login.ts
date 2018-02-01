@@ -1,0 +1,194 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonService } from "../../../@core/Service/Common.Service";
+import { ToPostService } from "../../../@core/Service/ToPost.Service";
+import { AppGlobal } from "../../../@core/Classes/AppGlobal";
+
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Config as Cif } from "../../../@core/Classes/Config";
+import { TranslateService } from '@ngx-translate/core'
+import { concat } from 'rxjs/observable/concat';
+
+
+@Component({
+    selector: 'auth-login',
+    templateUrl: 'auth-login.html',
+})
+export class AuthLoginPage {
+    redirectDelay: number = 0;
+    showMessages: any = {};
+    provider: string = '';
+
+    errors: string[] = [];
+    messages: string[] = [];
+    user: any = {};
+    submitted: boolean = false;
+
+    userForm: FormGroup;
+    validationMessages: any;
+    /**
+     * 当前cook里的所有用户密码信息
+     */
+    userAndPwdList = []
+
+    rememberPwd: any = false;
+    constructor(
+        private commonService: CommonService,
+        private toPostService: ToPostService,
+        private formBuilder: FormBuilder,
+        private translate: TranslateService,
+
+    ) {
+
+        let userAndPwdListStr = AppGlobal.CooksGet("userAndPwdList")
+
+        if (userAndPwdListStr != null && userAndPwdListStr != "") {
+            try {
+                this.userAndPwdList = JSON.parse(userAndPwdListStr)
+            } catch (error) { this.userAndPwdList = [] }
+        }
+
+        this.userForm = this.formBuilder.group({
+            loginName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+            password: ['', [Validators.required]]
+        });
+        this.validationMessages = {
+            'loginName': {
+                'aliasName': ""
+            },
+            'password': {
+                'aliasName': ""
+            }
+        }
+
+        if (Cif.debug) {
+            this.userForm.get('loginName').setValue("sysadmin");
+            this.userForm.get('password').setValue("123456");
+        }
+        if (this.userAndPwdList.length > 0) {
+            console.log("设置值")
+            this.userForm.get('loginName').setValue(this.userAndPwdList[this.userAndPwdList.length - 1].loginName);
+            this.userForm.get('password').setValue(this.userAndPwdList[this.userAndPwdList.length - 1].password);
+        }
+        let nowRememberPwd = AppGlobal.CooksGet("rememberPwd")
+        if (nowRememberPwd == null || nowRememberPwd == '' || nowRememberPwd == 'false') {
+            this.rememberPwd = false
+        }
+        else {
+            this.rememberPwd = true
+        }
+
+        let apiUrl = AppGlobal.CooksGet('apiUrl');
+        if (apiUrl != null && apiUrl != '') {
+            Cif.api = apiUrl;
+            Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+        }
+
+    }
+    login() {
+
+
+        if (this.userForm.invalid) {
+            let formErrors = this.commonService.FormValidMsg(this.userForm, this.validationMessages);
+            console.log(formErrors);
+            this.commonService.hint(formErrors.ErrorMessage, this.translate.instant("public.Invalid_input"))
+            return;
+        }
+        this.user = this.userForm.value;
+
+        let now = null
+        for (let index = this.userAndPwdList.length - 1; index >= 0; index--) {
+            const element = this.userAndPwdList[index];
+            if (element.loginName == this.user.loginName) {
+                this.userAndPwdList.splice(index, 1)
+                now = element;
+                element.password = this.rememberPwd ? this.user.password : "";
+            }
+        }
+        if (now == null) {
+            now = {
+                "loginName": this.user.loginName,
+                "password": this.rememberPwd ? this.user.password : "",
+            }
+        }
+        this.userAndPwdList.push(now)
+
+        AppGlobal.CooksSet("userAndPwdList", JSON.stringify(this.userAndPwdList))
+        AppGlobal.CooksSet("rememberPwd", this.rememberPwd);
+
+
+        this.commonService.showLoading()
+        this.toPostService.Post("auth/UserLogin", this.user).then((res: any) => {
+            if (res == null) {
+                this.commonService.hint(this.commonService.LanguageStr("public.LoginError"))
+                return false;
+            }
+            if (res.access_token) {
+                //保存用户名，仅仅用于在推送消息的时候，检测该消息是否对该用户有效，tabs.ts
+                AppGlobal.CooksSet("loginName", this.userForm.value.loginName)
+                AppGlobal.SetToken(res.access_token);
+                AppGlobal.SetProperty(null); //保存物业
+                return true
+            }
+            else {
+                this.commonService.hint(res);
+                return false
+            };
+        }, (err) => {
+            this.commonService.hint(err, this.commonService.LanguageStr("public.Error"));
+            return false
+        })
+
+    }
+
+
+    isOpen = false
+    CheckAppUrl() {
+        setTimeout(() => {
+            this.isOpen = false
+        }, 200);
+        if (!this.isOpen) {
+            this.isOpen = true;
+            return;
+        }
+
+        this.commonService.Confirm(11,22,(x)=>{
+            
+            console.log("Ok")
+            console.log(x)
+        },(y)=>{
+            console.log("cancal")
+        })
+
+        // let alert = this.alertCtrl.create({
+        //     title: '修改API连接地址',
+        //     inputs: [
+        //         {
+        //             name: 'apiUrl',
+        //             value: Cif.api,
+        //             placeholder: 'API连接地址'
+        //         }
+        //     ],
+        //     buttons: [
+        //         {
+        //             text: '初始值',
+        //             role: 'cancel',
+        //             handler: data => {
+        //                 Cif.api = Cif._api
+        //                 Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+        //             }
+        //         },
+        //         {
+        //             text: '确认',
+        //             handler: data => {
+        //                 AppGlobal.CooksSet('apiUrl', data.apiUrl);
+        //                 Cif.api = data.apiUrl
+        //                 Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+        //                 console.log("imgUrl:" + Cif.imgUrl);
+        //                 console.log("api:" + Cif.api);
+        //             }
+        //         }
+        //     ]
+        // });
+        // alert.present();
+    }
+}
