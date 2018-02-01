@@ -1,7 +1,7 @@
 import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule ,ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { NbLayoutModule, NbCardModule, NbCheckboxModule } from '@nebular/theme';
@@ -35,14 +35,14 @@ import { AppTranslationModule } from '../../app.translation.module';
     AuthBlockPage,
     AuthPages,
   ],
-  entryComponents:[
+  entryComponents: [
     AuthLoginPage,
-  ],  
+  ],
   exports: [
     AuthLoginPage,
     AuthBlockPage,
     AuthPages,
   ],
 })
-export class AuthModule {  
+export class AuthModule {
 }
