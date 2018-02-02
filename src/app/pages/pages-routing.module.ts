@@ -8,6 +8,16 @@ const routes: Routes = [{
   path: '',
   component: PagesComponent,
   children: [{
+    path: 'user',
+    loadChildren: './user/user.module#UserModule',
+  },{
+    path: 'role',
+    loadChildren: './role/role.module#RoleModule',
+  },{
+    path: 'module',
+    loadChildren: './module/module.module#ModuleModule',
+  },
+  {
     path: 'dashboard',
     component: DashboardComponent,
   }, {

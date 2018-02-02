@@ -1,5 +1,17 @@
 {
-  "welcome": "欢迎使用本应用",
+  "welcome": "学习Ng网站开发",
+  "home":{
+    "Light":"主题1",
+    "Cosmic":"主题2",
+    "Profile":"配置文件",
+    "LogOut":"退出"
+  },
+  "role":{
+    "list-title":"角色管理"
+  },
+  "user":{
+    "list-title":"用户管理"
+  },
   "public": {
     "Search": "搜索",
     "Cancel": "取消",

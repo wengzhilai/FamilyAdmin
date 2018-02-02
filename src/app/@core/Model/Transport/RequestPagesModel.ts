@@ -5,9 +5,9 @@ import { PostBaseModel } from "./PostBaseModel";
  * 请求数据包
  * 
  * @export
- * @class RequesPagesModel
+ * @class RequestPagesModel
  */
-export class RequesPagesModel extends PostBaseModel  {
+export class RequestPagesModel extends PostBaseModel  {
     constructor() {
         super();
         this.AttachParams=new Array<KeyValuePair>()
