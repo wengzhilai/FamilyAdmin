@@ -1,34 +1,22 @@
-import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { ThemeModule } from '../../@theme/theme.module';
 
-import { NbLayoutModule, NbCardModule, NbCheckboxModule } from '@nebular/theme';
-
-
-import { routes } from './module.routes';
-import { routedComponents } from './module.routes';
-import { ModalModule } from 'ngx-bootstrap';
 import { AppTranslationModule } from '../../app.translation.module';
+import { routedComponents, ModuleRoutingModule } from './module.routes';
 import { ModuleListPage } from './module-list/module-list';
-
+import { ModuleAddPage } from './module-add/module-add';
 
 @NgModule({
   imports: [
-    CommonModule,
-    NbLayoutModule,
-    NbCardModule,
-    NbCheckboxModule,
-    RouterModule.forChild(routes),
-    ModalModule.forRoot(),
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    AppTranslationModule,
+    ThemeModule,
+    Ng2SmartTableModule,
+    ModuleRoutingModule,
   ],
   declarations: [
-    ModuleListPage
+    routedComponents,
+    ModuleListPage,
+    ModuleAddPage,
   ],
   entryComponents: [
   ],

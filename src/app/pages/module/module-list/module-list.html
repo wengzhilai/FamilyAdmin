@@ -1,3 +1,17 @@
-<p>
-  module-list works!
-</p>
+<nb-card>
+  <nb-card-header >
+    {{"role.list-title"|translate}}
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table 
+    [settings]="settings" 
+    [source]="source" 
+    (editConfirm)="editConfirm($event)" 
+    (createConfirm)="createConfirm($event)"
+    (deleteConfirm)="onDeleteConfirm($event)"
+    (create)="onCreate($event)"
+    >
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
