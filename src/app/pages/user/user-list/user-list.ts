@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { ToPostService } from '../../../@core/Service/ToPost.Service';
 import { CommonService } from '../../../@core/Service/Common.Service';
 import { RequestPagesModel } from "../../../@core/Model/Transport/RequestPagesModel";
 import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
 import { RequestSaveModel } from "../../../@core/Model/Transport/RequestSaveModel";
+import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
+import { Http } from '@angular/http';
+
+
 @Component({
   selector: 'user-list',
   templateUrl: './user-list.html',
   styleUrls: ['./user-list.scss']
 })
 export class UserListPage implements OnInit {
-  source: LocalDataSource = new LocalDataSource();
+  source: ServerDataSource;
 
   settings = {
     noDataMessage: "无数据",
@@ -64,7 +67,6 @@ export class UserListPage implements OnInit {
       IS_LOCKED: {
         title: '状态',
         type: 'number',
-        editable: false
       },
     },
   };
@@ -73,28 +75,13 @@ export class UserListPage implements OnInit {
     private service: SmartTableService,
     private toPostService: ToPostService,
     private commonService: CommonService,
-
+    http: Http,
   ) {
-    const data = this.service.getData();
-    this.source.load(data);
-    this.PostData()
-  }
-
-  PostData() {
-    this.commonService.showLoading()
-    let postBean: RequestPagesModel = new RequestPagesModel();
-    this.toPostService.Post("User/List", postBean).then((x: AppReturnDTO) => {
-      this.commonService.hideLoading()
-      if (x.IsSuccess) {
-        this.source.load(x.Data);
-      }
-      else {
-        this.commonService.hint(x.Msg);
-      }
-    })
+    this.source = new ServerDataSource(this.toPostService,this.commonService, { endPoint: 'User/List' });
   }
 
   ngOnInit() {
+
   }
 
   editConfirm(event): void {
@@ -102,7 +89,7 @@ export class UserListPage implements OnInit {
     if (window.confirm('确定要修改吗?')) {
       let postClass: RequestSaveModel = new RequestSaveModel();
       postClass.Data = event.newData;
-      postClass.SaveKeys = ["NAME","IS_LOCKED"];
+      postClass.SaveKeys = ["NAME", "IS_LOCKED"];
       this.toPostService.Post("user/save", postClass).then((data) => {
         if (data.IsSuccess) {
           event.confirm.resolve();
@@ -143,4 +130,5 @@ export class UserListPage implements OnInit {
       event.confirm.reject();
     }
   }
+
 }

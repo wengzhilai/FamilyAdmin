@@ -107,6 +107,39 @@ export class ToPostService {
       })
       .catch(this.handleError);
   }
+
+
+  PostToObservable(apiName, postBean: any, callback = null) {
+    console.group("开始请求[" + apiName + "]参数：");
+    console.time("Post时间");
+
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    if (AppGlobal.GetToken() != null) {
+      headers.append('Authorization', 'Bearer ' + AppGlobal.GetToken());
+    }
+    // console.log(headers)
+    this.commonService.PlatformsExists("core") ? console.log(postBean) : console.log(JSON.stringify(postBean));
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(Config.api + apiName, postBean, options).map((res) => {
+      console.log("返回结果：");
+      let response: any = res.json();
+      this.commonService.PlatformsExists("core") ? console.log(response) : console.log(JSON.stringify(response));
+      if (response.IsSuccess) {
+        if (callback) {
+          callback(response);
+        }
+      }
+      else {
+        this.commonService.PlatformsExists("core") ? console.warn(response.Msg) : console.warn(JSON.stringify(response.Msg));
+      }
+      console.timeEnd("Post时间");
+      console.groupEnd();
+      return response;
+    })
+  }
+
   PostContentType(apiName, postStr: string, contentType: string) {
     console.group("请求[" + apiName + "]参数：");
     console.time("Post时间");
@@ -170,7 +203,7 @@ export class ToPostService {
    */
 
   LoginOut() {
-    Config.homeSubscribeNotification=false;
+    Config.homeSubscribeNotification = false;
     return this.Post("UserPls/LogoutedEquipment",
       {
         EquipmentCode: AppGlobal.CooksGet("EquipmentCode")
