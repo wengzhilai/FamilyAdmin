@@ -101,9 +101,12 @@ export class ToPostService {
         console.error('请求失败:');
         this.commonService.PlatformsExists("core") ? console.error(error) : console.error(JSON.stringify(error)); // for demo purposes only
         console.timeEnd("Post时间");
-
         console.groupEnd();
-        this.commonService.showError(error);
+
+        let errorMsg: AppReturnDTO = new AppReturnDTO();
+        errorMsg.IsSuccess = false;
+        errorMsg.Msg = "连接网络失败";
+        return errorMsg
       })
       .catch(this.handleError);
   }

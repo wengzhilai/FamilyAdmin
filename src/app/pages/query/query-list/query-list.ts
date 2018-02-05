@@ -9,11 +9,11 @@ import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSo
 import { Http } from '@angular/http';
 
 @Component({
-  selector: 'module-list',
-  templateUrl: './module-list.html',
-  styleUrls: ['./module-list.scss']
+  selector: 'query-list',
+  templateUrl: './query-list.html',
+  styleUrls: ['./query-list.scss']
 })
-export class ModuleListPage implements OnInit {
+export class QueryListPage implements OnInit {
   source: ServerDataSource;
   settings: any = ServerDataSource.getDefaultSetting();
 
@@ -23,34 +23,36 @@ export class ModuleListPage implements OnInit {
     private commonService: CommonService,
     http: Http,
   ) {
-    this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'module/list' });
-    // this.settings.mode="inline"
+    this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/list' });
+
     this.settings.columns = {
       ID: {
-        title: '模块ID',
+        title: '查询ID',
         type: 'number',
         editable: false,
       },
       NAME: {
-        title: '模块名',
-        type: 'string',
-        editable:true
-      },
-      PARENT_ID: {
-        title: '上级ID',
-        type: 'number',
-      },
-      LOCATION: {
-        title: '地址',
+        title: '查询名',
         type: 'string',
       },
       CODE: {
         title: '代码',
         type: 'string',
       },
-      IS_DEBUG: {
-        title: '是否调试',
+      AUTO_LOAD: {
+        title: '自动加载',
+        defaultValue:1,
         type: 'number',
+      },
+      PAGE_SIZE: {
+        title: '页面大小',
+        type: 'number',
+        defaultValue:10
+      },
+      SHOW_CHECKBOX: {
+        title: '允许多选',
+        type: 'number',
+        defaultValue:1,
         editor: {
           type: 'list',
           config: {
@@ -61,38 +63,100 @@ export class ModuleListPage implements OnInit {
           },
         },
       },
-      IS_HIDE: {
+      IS_DEBUG: {
         title: '是否隐藏',
         type: 'number',
+        defaultValue:1,
+        editor: {
+          type: 'list',
+          config: {
+            list: [
+              { value: '1', title: '是' }, 
+              { value: '0', title: '否' }, 
+            ],
+          },
+        },
       },
-      SHOW_ORDER: {
-        title: '排序号',
+      FILTR_LEVEL: {
+        title: '过滤层级',
         type: 'number',
+        defaultValue:1,       
+        
       },
-      DESCRIPTION: {
-        title: '描述',
+      QUERY_CONF: {
+        title: '查询脚本',
         type: 'string',
         inputWidth: 12,
         editor: {
           type: 'textarea'
         }
       },
-      IMAGE_URL: {
-        title: '图片地址',
+      QUERY_CFG_JSON: {
+        title: '列配置信息',
         type: 'string',
+        inputWidth: 12,
+        editor: {
+          type: 'textarea'
+        }
       },
       DESKTOP_ROLE: {
         title: '是否首页显示',
         type: 'string',
       },
-      W: {
-        title: '宽',
-        type: 'number',
+      IN_PARA_JSON: {
+        title: '传入的参数',
+        type: 'string',
+        inputWidth: 12,
+        editor: {
+          type: 'textarea'
+        }
       },
-      H: {
-        title: '高',
-        type: 'number',
+      JS_STR: {
+        title: 'JS脚本',
+        type: 'string',
+        inputWidth: 12,
+        editor: {
+          type: 'textarea'
+        }
+      },
+      ROWS_BTN: {
+        title: '行按钮',
+        type: 'string',
+      },
+      HEARD_BTN: {
+        title: '表头按钮',
+        type: 'string',
+      },
+      REPORT_SCRIPT: {
+        title: 'RPT报表脚本',
+        type: 'string',
+      },
+      CHARTS_CFG: {
+        title: 'CHARTS报表脚本',
+        type: 'string',
+      },
+      CHARTS_TYPE: {
+        title: 'CHARTS报表类型',
+        type: 'string',
+      },
+      FILTR_STR: {
+        title: '筛选脚本',
+        type: 'string',
+      },
+      REMARK: {
+        title: '备注',
+        type: 'string',
+        inputWidth: 12,
+        editor: {
+          type: 'textarea'
+        }
+      },
+      NEW_DATA:{
+        title: '输入的时间',
+        type: 'string',
       }
+
+
     }
   }
 
@@ -109,20 +173,24 @@ export class ModuleListPage implements OnInit {
     let add = this.commonService.ShowModal({ class: 'modal-lg' })
     add.content.SetSettingsColumns(this.settings.columns)
 
-    add.content.message = "修改模块"
+    add.content.message = "修改查询"
     if (event.data != null) {
       add.content.bean = event.data
-      add.content.message = "添加模块"
+      add.content.message = "添加查询"
     }
     add.content.OkHandler = (bean,saveKeys) => {
       if (window.confirm('确定要保存吗？')) {
         let postClass: RequestSaveModel = new RequestSaveModel();
         postClass.Data = bean;
         postClass.SaveKeys = saveKeys;
-        this.toPostService.Post("module/save", postClass).then((data: AppReturnDTO) => {
+        this.toPostService.Post("query/save", postClass).then((data: AppReturnDTO) => {
+          console.log(data)
           if (data.IsSuccess) {
             this.source.refresh()
             add.hide()
+          }
+          else{
+            this.commonService.hint(data.Msg)
           }
         });
       } else {
@@ -144,7 +212,7 @@ export class ModuleListPage implements OnInit {
       this.commonService.showLoading();
       let postClass: PostBaseModel = new PostBaseModel();
       postClass.Key = event.data.ID;
-      this.toPostService.Post("module/delete", postClass).then((data: AppReturnDTO) => {
+      this.toPostService.Post("query/delete", postClass).then((data: AppReturnDTO) => {
         this.commonService.hideLoading()
         if (data.IsSuccess) {
           this.source.refresh()

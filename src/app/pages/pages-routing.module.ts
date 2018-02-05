@@ -16,6 +16,9 @@ const routes: Routes = [{
   },{
     path: 'module',
     loadChildren: './module/module.module#ModuleModule',
+  },{
+    path: 'query',
+    loadChildren: './query/query.module#QueryModule',
   },
   {
     path: 'dashboard',

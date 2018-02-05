@@ -12,6 +12,9 @@
   "user":{
     "list-title":"用户管理"
   },
+  "query":{
+    "list-title":"查询管理"
+  },
   "public": {
     "Search": "搜索",
     "Cancel": "取消",

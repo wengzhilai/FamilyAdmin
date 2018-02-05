@@ -4,7 +4,7 @@ import { ToPostService } from '../../../@core/Service/ToPost.Service';
 import { CommonService } from '../../../@core/Service/Common.Service';
 import { RequestPagesModel } from "../../../@core/Model/Transport/RequestPagesModel";
 import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
-import { RequestSaveModel } from "../../../@core/Model/Transport/RequestSaveModel";
+import { RequestSaveModel, PostBaseModel } from "../../../@core/Model/Transport";
 import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
 import { Http } from '@angular/http';
 
@@ -16,38 +16,25 @@ import { Http } from '@angular/http';
 })
 export class UserListPage implements OnInit {
   source: ServerDataSource;
+  settings: any = ServerDataSource.getDefaultSetting();
 
-  settings = {
-    noDataMessage: "无数据",
-
-    add: {
-      confirmCreate: true,
-      addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      confirmSave: true,
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    actions: {
-      columnTitle: "操作"
-    },
-    columns: {
+  constructor(
+    private service: SmartTableService,
+    private toPostService: ToPostService,
+    private commonService: CommonService,
+    http: Http,
+  ) {
+    this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'user/list' });
+    this.settings.columns = {
       ID: {
         title: '用户ID',
         type: 'number',
-        editable: false
+        editable: false,
       },
       NAME: {
         title: '姓名',
         type: 'string',
+        editable: true,
       },
       LOGIN_NAME: {
         title: '登录名',
@@ -68,66 +55,63 @@ export class UserListPage implements OnInit {
         title: '状态',
         type: 'number',
       },
-    },
-  };
-
-  constructor(
-    private service: SmartTableService,
-    private toPostService: ToPostService,
-    private commonService: CommonService,
-    http: Http,
-  ) {
-    this.source = new ServerDataSource(this.toPostService,this.commonService, { endPoint: 'User/List' });
+    }
   }
 
   ngOnInit() {
 
   }
 
-  editConfirm(event): void {
-    console.log(event)
-    if (window.confirm('确定要修改吗?')) {
-      let postClass: RequestSaveModel = new RequestSaveModel();
-      postClass.Data = event.newData;
-      postClass.SaveKeys = ["NAME", "IS_LOCKED"];
-      this.toPostService.Post("user/save", postClass).then((data) => {
-        if (data.IsSuccess) {
-          event.confirm.resolve();
-        }
-        else {
-          event.confirm.reject();
-        }
-      });
-    } else {
-      event.confirm.reject();
+  /**
+   * 
+   * @param event 添加事件
+   */
+  onSave(event): void {
+    console.log(event.data)
+    let add = this.commonService.ShowModal({ class: 'modal-lg' })
+    add.content.SetSettingsColumns(this.settings.columns)
+
+    add.content.message = "修改模块"
+    if (event.data != null) {
+      add.content.bean = event.data
+      add.content.message = "添加模块"
+    }
+    add.content.OkHandler = (bean, saveKeys) => {
+      if (window.confirm('确定要保存吗？')) {
+        let postClass: RequestSaveModel = new RequestSaveModel();
+        postClass.Data = bean;
+        postClass.SaveKeys = saveKeys;
+        this.toPostService.Post("user/save", postClass).then((data: AppReturnDTO) => {
+          if (data.IsSuccess) {
+            this.source.refresh()
+            add.hide()
+          }
+        });
+      } else {
+        add.hide()
+      }
+    }
+    add.content.CancelHandler = (bean) => {
+      add.hide()
     }
   }
 
-  createConfirm(event): void {
-    console.log(event.newData)
-
-    if (window.confirm('确定要添加吗？')) {
-      let postClass: RequestSaveModel = new RequestSaveModel();
-      postClass.Data = event.newData;
-      this.toPostService.Post("user/save", postClass).then((data: AppReturnDTO) => {
+  /**
+   * 
+   * @param event 添加事件
+   */
+  onDelete(event): void {
+    console.log(event.data)
+    if (window.confirm('确定要删除吗?')) {
+      this.commonService.showLoading();
+      let postClass: PostBaseModel = new PostBaseModel();
+      postClass.Key = event.data.ID;
+      this.toPostService.Post("user/delete", postClass).then((data: AppReturnDTO) => {
+        this.commonService.hideLoading()
         if (data.IsSuccess) {
-          event.confirm.resolve();
-        }
-        else {
-          event.confirm.reject();
+          this.source.refresh()
         }
       });
-    } else {
-      event.confirm.reject();
-    }
-  }
-
-
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
     }
   }
 

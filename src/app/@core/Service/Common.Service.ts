@@ -127,6 +127,16 @@ export class CommonService {
     this.loader = this.modalService.show(ModalLoadingPage, { initialState });
 
   };
+
+  /**
+   * 显示弹出框
+   * @param content 
+   * @param config 
+   */
+  ShowModal(config?: any) {
+    return this.modalService.show(ModalConfirmPage, config);
+  };
+
   /**
    * 显示提示，并在2秒后自动关闭
    * 
@@ -466,22 +476,6 @@ export class CommonService {
       modalRef.hide()
       CancelHandler(x)
     }
-    // let alert = this.alertCtrl.create({
-    //   title: title,
-    //   message: message,
-    //   buttons: [
-    //     {
-    //       text: ChancelText,
-    //       role: 'cancel',
-    //       handler: CancelHandler
-    //     },
-    //     {
-    //       text: OkText,
-    //       handler: OkHandler
-    //     }
-    //   ]
-    // });
-    // alert.present();
   }
   /**
    * 
@@ -500,17 +494,6 @@ export class CommonService {
     activeModal.content.modalContent = message.replace(/\\r\\n/g, "<br />")
     activeModal.content.buttonName = [this.translate.instant("public.Okay")]
 
-    // let alert = this.alertCtrl.create({
-    //   title: title,
-    //   message: message,
-    //   buttons: [
-    //     {
-    //       text: OkText,
-    //       handler: OkHandler
-    //     }
-    //   ]
-    // });
-    // alert.present();
   }
 
 }

@@ -38,6 +38,32 @@ export class ServerDataSource extends LocalDataSource {
       return this.data;
     }).toPromise();
   }
+  /**
+   * 获取默认的表参数
+   */
+  static getDefaultSetting() {
+    return {
+      noDataMessage: "无数据",
+      mode: "external",
+      add: {
+        addButtonContent: '<i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
+      },
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
+      },
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+      },
+      actions: {
+        columnTitle: "操作",
+      },
+      columns: {}
+    }
+  }
 
   /**
    * Extracts array of data from server response

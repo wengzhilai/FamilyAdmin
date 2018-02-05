@@ -19,6 +19,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: '模块管理',
         icon: 'ion-android-archive',
         link: '/pages/module/list',
+      },
+      {
+        title: '查询管理',
+        icon: 'ion-android-archive',
+        link: '/pages/query/list',
       }
     ]
   },

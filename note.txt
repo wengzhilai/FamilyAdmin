@@ -3,6 +3,8 @@ git push --no-verify
 npm install -g @angular/cli
 ng generate component [name]
 
+query还没有解决，不显示字段
+
 https://github.com/angular/angular-cli#installation
 Component	ng g component my-new-component
 Directive	ng g directive my-new-directive
