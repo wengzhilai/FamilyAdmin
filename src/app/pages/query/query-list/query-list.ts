@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { ToPostService } from '../../../@core/Service/ToPost.Service';
 import { CommonService } from '../../../@core/Service/Common.Service';
@@ -7,6 +7,31 @@ import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
 import { RequestSaveModel, PostBaseModel } from "../../../@core/Model/Transport";
 import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
 import { Http } from '@angular/http';
+import { ViewCell,DefaultEditor  } from 'ng2-smart-table';
+import { concat } from 'rxjs/observable/concat';
+
+
+@Component({
+  selector: 'button-view',
+  template: `
+    <button (click)="onClick()">{{ renderValue }}</button>
+  `,
+})
+export class ButtonViewComponent extends DefaultEditor implements ViewCell, OnInit {
+  renderValue: string;
+
+  @Input() value: string | number;
+  @Input() rowData: any;
+
+  ngOnInit() {
+    console.log(this)
+    console.log(this.value)
+    console.log(this.rowData)
+    this.renderValue = this.value.toString().toUpperCase();
+  }
+
+}
+
 
 @Component({
   selector: 'query-list',
@@ -17,6 +42,7 @@ export class QueryListPage implements OnInit {
   source: ServerDataSource;
   settings: any = ServerDataSource.getDefaultSetting();
 
+  configJson: any = {}
   constructor(
     private service: SmartTableService,
     private toPostService: ToPostService,
@@ -25,7 +51,7 @@ export class QueryListPage implements OnInit {
   ) {
     this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/list' });
 
-    this.settings.columns = {
+    this.configJson = {
       ID: {
         title: '查询ID',
         type: 'number',
@@ -41,38 +67,39 @@ export class QueryListPage implements OnInit {
       },
       AUTO_LOAD: {
         title: '自动加载',
-        defaultValue:1,
+        defaultValue: 1,
         type: 'number',
       },
       PAGE_SIZE: {
         title: '页面大小',
         type: 'number',
-        defaultValue:10
+        defaultValue: 10
       },
       SHOW_CHECKBOX: {
         title: '允许多选',
         type: 'number',
-        defaultValue:1,
+        defaultValue: 1,
         editor: {
           type: 'list',
           config: {
             list: [
-              { value: '1', title: '是' }, 
-              { value: '0', title: '否' }, 
+              { value: '1', title: '是' },
+              { value: '0', title: '否' },
             ],
           },
         },
       },
       IS_DEBUG: {
         title: '是否隐藏',
-        type: 'number',
-        defaultValue:1,
+        type: 'custom',
+        renderComponent: ButtonViewComponent,
+        defaultValue: 1,
         editor: {
           type: 'list',
           config: {
             list: [
-              { value: '1', title: '是' }, 
-              { value: '0', title: '否' }, 
+              { value: '1', title: '是' },
+              { value: '0', title: '否' },
             ],
           },
         },
@@ -80,13 +107,17 @@ export class QueryListPage implements OnInit {
       FILTR_LEVEL: {
         title: '过滤层级',
         type: 'number',
-        defaultValue:1,       
-        
+        defaultValue: 1,
+      },
+      DESKTOP_ROLE: {
+        title: '是否首页显示',
+        type: 'string',
       },
       QUERY_CONF: {
         title: '查询脚本',
         type: 'string',
         inputWidth: 12,
+        hide: true,
         editor: {
           type: 'textarea'
         }
@@ -94,18 +125,17 @@ export class QueryListPage implements OnInit {
       QUERY_CFG_JSON: {
         title: '列配置信息',
         type: 'string',
+        hide: true,
         inputWidth: 12,
         editor: {
           type: 'textarea'
         }
       },
-      DESKTOP_ROLE: {
-        title: '是否首页显示',
-        type: 'string',
-      },
+
       IN_PARA_JSON: {
         title: '传入的参数',
         type: 'string',
+        hide: true,
         inputWidth: 12,
         editor: {
           type: 'textarea'
@@ -114,6 +144,7 @@ export class QueryListPage implements OnInit {
       JS_STR: {
         title: 'JS脚本',
         type: 'string',
+        hide: true,
         inputWidth: 12,
         editor: {
           type: 'textarea'
@@ -121,26 +152,32 @@ export class QueryListPage implements OnInit {
       },
       ROWS_BTN: {
         title: '行按钮',
+        hide: true,
         type: 'string',
       },
       HEARD_BTN: {
         title: '表头按钮',
+        hide: true,
         type: 'string',
       },
       REPORT_SCRIPT: {
         title: 'RPT报表脚本',
+        hide: true,
         type: 'string',
       },
       CHARTS_CFG: {
         title: 'CHARTS报表脚本',
+        hide: true,
         type: 'string',
       },
       CHARTS_TYPE: {
         title: 'CHARTS报表类型',
+        hide: true,
         type: 'string',
       },
       FILTR_STR: {
         title: '筛选脚本',
+        hide: true,
         type: 'string',
       },
       REMARK: {
@@ -151,13 +188,13 @@ export class QueryListPage implements OnInit {
           type: 'textarea'
         }
       },
-      NEW_DATA:{
+      NEW_DATA: {
         title: '输入的时间',
         type: 'string',
       }
-
-
     }
+    //隐藏，hide=true的字段
+    this.settings.columns = ServerDataSource.ReMoveHideItem(this.configJson);
   }
 
   ngOnInit() {
@@ -171,14 +208,14 @@ export class QueryListPage implements OnInit {
   onSave(event): void {
     console.log(event.data)
     let add = this.commonService.ShowModal({ class: 'modal-lg' })
-    add.content.SetSettingsColumns(this.settings.columns)
+    add.content.SetSettingsColumns(this.configJson)
 
     add.content.message = "修改查询"
     if (event.data != null) {
       add.content.bean = event.data
       add.content.message = "添加查询"
     }
-    add.content.OkHandler = (bean,saveKeys) => {
+    add.content.OkHandler = (bean, saveKeys) => {
       if (window.confirm('确定要保存吗？')) {
         let postClass: RequestSaveModel = new RequestSaveModel();
         postClass.Data = bean;
@@ -189,7 +226,7 @@ export class QueryListPage implements OnInit {
             this.source.refresh()
             add.hide()
           }
-          else{
+          else {
             this.commonService.hint(data.Msg)
           }
         });

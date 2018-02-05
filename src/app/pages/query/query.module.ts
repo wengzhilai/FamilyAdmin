@@ -5,7 +5,7 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { AppTranslationModule } from '../../app.translation.module';
 import { ServiceModule } from "../../@core/Service/service.module";
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { QueryListPage } from './query-list/query-list';
+import { QueryListPage,ButtonViewComponent } from './query-list/query-list';
 import { routedComponents, QueryRoutingModule } from './query.routes';
 
 @NgModule({
@@ -19,8 +19,10 @@ import { routedComponents, QueryRoutingModule } from './query.routes';
   declarations: [
     routedComponents,
     QueryListPage,
+    ButtonViewComponent,
   ],
   entryComponents: [
+    ButtonViewComponent
   ],
   exports: [
   ],

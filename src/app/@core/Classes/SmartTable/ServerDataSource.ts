@@ -12,6 +12,7 @@ import { CommonService } from '../../Service/Common.Service';
 import { RequestPagesModel } from '../../Model/Transport/RequestPagesModel';
 
 import 'rxjs/add/operator/toPromise';
+import { concat } from 'rxjs/observable/concat';
 
 export class ServerDataSource extends LocalDataSource {
   protected conf: ServerSourceConf;
@@ -64,7 +65,19 @@ export class ServerDataSource extends LocalDataSource {
       columns: {}
     }
   }
-
+  /**
+   * 删除有Hide为true的项
+   * @param objJson 
+   */
+  static ReMoveHideItem(objJson) {
+    let reJson = {}
+    for (var item in objJson) {
+      if (objJson[item]["hide"] == null || objJson[item]["hide"] != true) {
+        reJson[item] = objJson[item]
+      }
+    }
+    return reJson
+  }
   /**
    * Extracts array of data from server response
    * @param res
