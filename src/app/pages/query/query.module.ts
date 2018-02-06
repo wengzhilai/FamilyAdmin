@@ -5,8 +5,13 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { AppTranslationModule } from '../../app.translation.module';
 import { ServiceModule } from "../../@core/Service/service.module";
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { QueryListPage,ButtonViewComponent } from './query-list/query-list';
-import { routedComponents, QueryRoutingModule } from './query.routes';
+import { QueryListPage } from './query-list/query-list';
+import { QueryRoutingModule } from './query.routes';
+import { SmartTableFormatValuePage } from "../../components/SmartTable/formatValue";
+import { ComponentsModule } from "../../components/components.module";
+import { QueryQueryComponent } from './query/query';
+import { QueryComponent } from './query.component';
+
 
 @NgModule({
   imports: [
@@ -14,15 +19,16 @@ import { routedComponents, QueryRoutingModule } from './query.routes';
     Ng2SmartTableModule,
     QueryRoutingModule,
     ServiceModule,
+    ComponentsModule,
     ModalModule.forRoot()
   ],
   declarations: [
-    routedComponents,
     QueryListPage,
-    ButtonViewComponent,
+    QueryQueryComponent,
+    QueryComponent,
   ],
   entryComponents: [
-    ButtonViewComponent
+    SmartTableFormatValuePage
   ],
   exports: [
   ],

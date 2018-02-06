@@ -28,6 +28,17 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ]
   },
   {
+    title: '测试查询',
+    icon: 'nb-gear',
+    children: [
+      {
+        title: '模块管理',
+        icon: 'ion-person-stalker',
+        link: '/pages/query/query/module',
+      }
+    ]
+  },
+  {
     title: 'Dashboard',
     icon: 'nb-home',
     link: '/pages/dashboard',

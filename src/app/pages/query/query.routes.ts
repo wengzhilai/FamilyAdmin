@@ -2,14 +2,21 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { QueryListPage } from './query-list/query-list';
 
+import { QueryQueryComponent } from './query/query';
+import { QueryComponent } from './query.component';
+
 export const routes: Routes = [
   {
     path: '',
-    component: QueryListPage,
+    component: QueryComponent,
     children: [
       {
         path: 'list',
         component: QueryListPage,
+      },
+      {
+        path: 'query/:code',
+        component: QueryQueryComponent,
       }
     ],
   },
@@ -21,6 +28,3 @@ export const routes: Routes = [
   exports: [RouterModule],
 })
 export class QueryRoutingModule { }
-
-export const routedComponents = [
-];

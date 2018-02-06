@@ -10,17 +10,17 @@ import { ToPostService } from '../../Service/ToPost.Service';
 import { CommonService } from '../../Service/Common.Service';
 
 import { RequestPagesModel } from '../../Model/Transport/RequestPagesModel';
-
 import 'rxjs/add/operator/toPromise';
 import { concat } from 'rxjs/observable/concat';
-
 export class ServerDataSource extends LocalDataSource {
   protected conf: ServerSourceConf;
   protected lastRequestCount: number = 0;
   constructor(
     protected toPostService: ToPostService,
     private commonService: CommonService,
-    conf: ServerSourceConf | {} = {}) {
+    conf: ServerSourceConf | {} = {},
+    private inKey:string=null
+  ) {
     super();
     this.conf = new ServerSourceConf(conf);
     if (!this.conf.endPoint) {
@@ -124,7 +124,7 @@ export class ServerDataSource extends LocalDataSource {
         postBean.SearchKey.push({ Key: keyName, Value: par.paramsMap.get(key)[0], Type: "like" }); //排序字段
       }
     })
-
+    postBean.Key=this.inKey
     this.commonService.showLoading();
     return this.toPostService.PostToObservable(this.conf.endPoint, postBean).map(x => {
       this.commonService.hideLoading();
@@ -179,3 +179,4 @@ export class ServerDataSource extends LocalDataSource {
     return requestOptions;
   }
 }
+

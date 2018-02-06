@@ -7,30 +7,9 @@ import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
 import { RequestSaveModel, PostBaseModel } from "../../../@core/Model/Transport";
 import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
 import { Http } from '@angular/http';
-import { ViewCell,DefaultEditor  } from 'ng2-smart-table';
+import { ViewCell } from 'ng2-smart-table';
 import { concat } from 'rxjs/observable/concat';
-
-
-@Component({
-  selector: 'button-view',
-  template: `
-    <button (click)="onClick()">{{ renderValue }}</button>
-  `,
-})
-export class ButtonViewComponent extends DefaultEditor implements ViewCell, OnInit {
-  renderValue: string;
-
-  @Input() value: string | number;
-  @Input() rowData: any;
-
-  ngOnInit() {
-    console.log(this)
-    console.log(this.value)
-    console.log(this.rowData)
-    this.renderValue = this.value.toString().toUpperCase();
-  }
-
-}
+import { SmartTableFormatValuePage } from "../../../components/SmartTable/formatValue";
 
 
 @Component({
@@ -52,145 +31,171 @@ export class QueryListPage implements OnInit {
     this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/list' });
 
     this.configJson = {
-      ID: {
-        title: '查询ID',
-        type: 'number',
-        editable: false,
+      "ID": {
+        "title": '查询ID',
+        "type": 'number',
+        "editable": false
       },
-      NAME: {
-        title: '查询名',
-        type: 'string',
+      "NAME": {
+        "title": '查询名',
+        "type": 'string'
       },
-      CODE: {
-        title: '代码',
-        type: 'string',
+      "CODE": {
+        "title": '代码',
+        "type": 'string'
       },
-      AUTO_LOAD: {
-        title: '自动加载',
-        defaultValue: 1,
-        type: 'number',
-      },
-      PAGE_SIZE: {
-        title: '页面大小',
-        type: 'number',
-        defaultValue: 10
-      },
-      SHOW_CHECKBOX: {
-        title: '允许多选',
-        type: 'number',
-        defaultValue: 1,
-        editor: {
-          type: 'list',
-          config: {
-            list: [
-              { value: '1', title: '是' },
-              { value: '0', title: '否' },
-            ],
-          },
+      "AUTO_LOAD": {
+        "title": '自动加载',
+        "defaultValue": 1,
+        "type": 'custom',
+        "renderComponent": SmartTableFormatValuePage,
+        "onComponentInitFunction": function(instance){
+          instance.format = (x) => {
+            return x == 0 ? "否" : "是"
+          }
         },
-      },
-      IS_DEBUG: {
-        title: '是否隐藏',
-        type: 'custom',
-        renderComponent: ButtonViewComponent,
-        defaultValue: 1,
-        editor: {
-          type: 'list',
-          config: {
-            list: [
-              { value: '1', title: '是' },
-              { value: '0', title: '否' },
-            ],
-          },
-        },
-      },
-      FILTR_LEVEL: {
-        title: '过滤层级',
-        type: 'number',
-        defaultValue: 1,
-      },
-      DESKTOP_ROLE: {
-        title: '是否首页显示',
-        type: 'string',
-      },
-      QUERY_CONF: {
-        title: '查询脚本',
-        type: 'string',
-        inputWidth: 12,
-        hide: true,
-        editor: {
-          type: 'textarea'
+        "editor": {
+          "type": 'list',
+          "config": {
+            "list": [
+              { "value": '1', "title": '是' },
+              { "value": '0', "title": '否' }
+            ]
+          }
         }
       },
-      QUERY_CFG_JSON: {
-        title: '列配置信息',
-        type: 'string',
-        hide: true,
-        inputWidth: 12,
-        editor: {
-          type: 'textarea'
+      "PAGE_SIZE": {
+        "title": '页面大小',
+        "type": 'number',
+        "defaultValue": 10
+      },
+      "SHOW_CHECKBOX": {
+        "title": '允许多选',
+        "type": 'custom',
+        "renderComponent": SmartTableFormatValuePage,
+        "onComponentInitFunction": function(instance){
+          instance.format = (x) => {
+            return x == 0 ? "否" : "是"
+          }
+        },
+        "defaultValue": 1,
+        "editor": {
+          "type": 'list',
+          "config": {
+            "list": [
+              { "value": '1', "title": '是' },
+              { "value": '0', "title": '否' }
+            ]
+          }
+        }
+      },
+      "IS_DEBUG": {
+        "title": '是否隐藏',
+        "type": 'custom',
+        "renderComponent": SmartTableFormatValuePage,
+        "onComponentInitFunction": function(instance){
+          instance.format = (x) => {
+            return x == 0 ? "否" : "是"
+          }
+        },
+        "defaultValue": 1,
+        "editor": {
+          "type": 'list',
+          "config": {
+            "list": [
+              { "value": '1', "title": '是' },
+              { "value": '0', "title": '否' }
+            ]
+          }
+        }
+      },
+      "FILTR_LEVEL": {
+        "title": '过滤层级',
+        "type": 'number',
+        "defaultValue": 1
+      },
+      "DESKTOP_ROLE": {
+        "title": '是否首页显示',
+        "type": 'string'
+      },
+      "QUERY_CONF": {
+        "title": '查询脚本',
+        "type": 'string',
+        "inputWidth": 12,
+        "hide": true,
+        "editor": {
+          "type": 'textarea'
+        }
+      },
+      "QUERY_CFG_JSON": {
+        "title": '列配置信息',
+        "type": 'string',
+        "hide": true,
+        "inputWidth": 12,
+        "editor": {
+          "type": 'textarea'
         }
       },
 
-      IN_PARA_JSON: {
-        title: '传入的参数',
-        type: 'string',
-        hide: true,
-        inputWidth: 12,
-        editor: {
-          type: 'textarea'
+      "IN_PARA_JSON": {
+        "title": '传入的参数',
+        "type": 'string',
+        "hide": true,
+        "inputWidth": 12,
+        "editor": {
+          "type": 'textarea'
         }
       },
-      JS_STR: {
-        title: 'JS脚本',
-        type: 'string',
-        hide: true,
-        inputWidth: 12,
-        editor: {
-          type: 'textarea'
+      "JS_STR": {
+        "title": 'JS脚本',
+        "type": 'string',
+        "hide": true,
+        "inputWidth": 12,
+        "editor": {
+          "type": 'textarea'
         }
       },
-      ROWS_BTN: {
-        title: '行按钮',
-        hide: true,
-        type: 'string',
+      "ROWS_BTN": {
+        "title": '行按钮',
+        "hide": true,
+        "type": 'string'
       },
-      HEARD_BTN: {
-        title: '表头按钮',
-        hide: true,
-        type: 'string',
+      "HEARD_BTN": {
+        "title": '表头按钮',
+        "hide": true,
+        "type": 'string'
       },
-      REPORT_SCRIPT: {
-        title: 'RPT报表脚本',
-        hide: true,
-        type: 'string',
+      "REPORT_SCRIPT": {
+        "title": 'RPT报表脚本',
+        "hide": true,
+        "type": 'string'
       },
-      CHARTS_CFG: {
-        title: 'CHARTS报表脚本',
-        hide: true,
-        type: 'string',
+      "CHARTS_CFG": {
+        "title": 'CHARTS报表脚本',
+        "hide": true,
+        "type": 'string'
       },
-      CHARTS_TYPE: {
-        title: 'CHARTS报表类型',
-        hide: true,
-        type: 'string',
+      "CHARTS_type": {
+        "title": 'CHARTS报表类型',
+        "hide": true,
+        "type": 'string'
       },
-      FILTR_STR: {
-        title: '筛选脚本',
-        hide: true,
-        type: 'string',
+      "FILTR_STR": {
+        "title": '筛选脚本',
+        "hide": true,
+        "type": 'string'
       },
-      REMARK: {
-        title: '备注',
-        type: 'string',
-        inputWidth: 12,
-        editor: {
-          type: 'textarea'
+      "REMARK": {
+        "title": '备注',
+        "type": 'string',
+        "inputWidth": 12,
+        "editor": {
+          "type": 'textarea'
         }
       },
-      NEW_DATA: {
-        title: '输入的时间',
-        type: 'string',
+      "NEW_DATA": {
+        "title": '输入的时间',
+        "type": 'string'
       }
     }
     //隐藏，hide=true的字段
