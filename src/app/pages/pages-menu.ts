@@ -34,7 +34,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: '模块管理',
         icon: 'ion-person-stalker',
-        link: '/pages/query/query/module',
+        link: '/pages/query/query/module'
+      },
+      {
+        title: '用户管理',
+        icon: 'ion-person-stalker',
+        link: '/pages/query/query/user'
       }
     ]
   },

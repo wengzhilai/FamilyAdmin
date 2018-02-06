@@ -26,35 +26,35 @@ export class UserListPage implements OnInit {
   ) {
     this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'user/list' });
     this.settings.columns = {
-      ID: {
-        title: '用户ID',
-        type: 'number',
-        editable: false,
+      "ID": {
+        "title": '用户ID',
+        "type": 'number',
+        "editable": false
       },
-      NAME: {
-        title: '姓名',
-        type: 'string',
-        editable: true,
+      "NAME": {
+        "title": '姓名',
+        "type": 'string',
+        "editable": true
       },
-      LOGIN_NAME: {
-        title: '登录名',
-        type: 'string',
-        editable: false
+      "LOGIN_NAME": {
+        "title": '登录名',
+        "type": 'string',
+        "editable": false
       },
-      LOGIN_COUNT: {
-        title: '登录次数',
-        type: 'string',
-        editable: false
+      "LOGIN_COUNT": {
+        "title": '登录次数',
+        "type": 'string',
+        "editable": false
       },
-      LAST_ACTIVE_TIME: {
-        title: '最后活动时间',
-        type: 'string',
-        editable: false
+      "LAST_ACTIVE_TIME": {
+        "title": '最后活动时间',
+        "type": 'string',
+        "editable": false
       },
-      IS_LOCKED: {
-        title: '状态',
-        type: 'number',
-      },
+      "IS_LOCKED": {
+        "title": '状态',
+        "type": 'number'
+      }
     }
   }
 
