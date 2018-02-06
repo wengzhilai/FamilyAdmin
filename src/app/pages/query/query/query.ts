@@ -57,22 +57,21 @@ export class QueryQueryComponent implements OnInit {
         let t = ""
         eval("t=" + data.Data.QUERY_CFG_JSON)
         this.configJson = t
-        this.settings.columns = ServerDataSource.ReMoveHideItem(this.configJson);
-
-        for (const item in this.settings.columns) {
-            if(this.settings.columns[item]["renderComponent"]=="SmartTableFormatValuePage")
-            {
-              this.settings.columns[item]["renderComponent"]==SmartTableFormatValuePage
-            }
+        let tempCol = ServerDataSource.ReMoveHideItem(this.configJson);
+        for (const item in tempCol) {
+          if (tempCol[item]["renderComponent"] == "SmartTableFormatValuePage") {
+            tempCol[item]["renderComponent"] = SmartTableFormatValuePage
+          }
         }
-        
+        this.settings.columns = tempCol
+        console.log(this.settings.columns)
         this.LoadSetting = true
 
         this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/query' }, this.code);
 
 
       }
-      else{
+      else {
         this.commonService.hideLoading()
       }
     }, (x) => {
