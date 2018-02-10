@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter,ViewChild } from '@angular/core';
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { ToPostService } from '../../../@core/Service/ToPost.Service';
 import { CommonService } from '../../../@core/Service/Common.Service';
@@ -18,6 +18,8 @@ import { SmartTableFormatValuePage } from "../../../components/SmartTable/format
   styleUrls: ['./query-list.scss']
 })
 export class QueryListPage implements OnInit {
+  @ViewChild('smartTable') smartTable: any;
+
   source: ServerDataSource;
   settings: any = ServerDataSource.getDefaultSetting();
 
@@ -118,10 +120,15 @@ export class QueryListPage implements OnInit {
         "title": '是否首页显示',
         "type": 'string'
       },
+      "NEW_DATA": {
+        "title": '输入的时间',
+        "type": 'string'
+      },
       "QUERY_CONF": {
         "title": '查询脚本',
         "type": 'string',
         "inputWidth": 12,
+        "isTabs":true,
         "hide": true,
         "editor": {
           "type": 'textarea'
@@ -130,6 +137,7 @@ export class QueryListPage implements OnInit {
       "QUERY_CFG_JSON": {
         "title": '列配置信息',
         "type": 'string',
+        "isTabs":true,
         "hide": true,
         "inputWidth": 12,
         "editor": {
@@ -140,6 +148,7 @@ export class QueryListPage implements OnInit {
       "IN_PARA_JSON": {
         "title": '传入的参数',
         "type": 'string',
+        "isTabs":true,
         "hide": true,
         "inputWidth": 12,
         "editor": {
@@ -149,6 +158,7 @@ export class QueryListPage implements OnInit {
       "JS_STR": {
         "title": 'JS脚本',
         "type": 'string',
+        "isTabs":true,
         "hide": true,
         "inputWidth": 12,
         "editor": {
@@ -157,49 +167,31 @@ export class QueryListPage implements OnInit {
       },
       "ROWS_BTN": {
         "title": '行按钮',
+        "isTabs":true,
         "hide": true,
         "type": 'string'
       },
       "HEARD_BTN": {
         "title": '表头按钮',
+        "isTabs":true,
         "hide": true,
         "type": 'string'
       },
-      "REPORT_SCRIPT": {
-        "title": 'RPT报表脚本',
-        "hide": true,
-        "type": 'string'
-      },
-      "CHARTS_CFG": {
-        "title": 'CHARTS报表脚本',
-        "hide": true,
-        "type": 'string'
-      },
-      "CHARTS_type": {
-        "title": 'CHARTS报表类型',
-        "hide": true,
-        "type": 'string'
-      },
-      "FILTR_STR": {
-        "title": '筛选脚本',
-        "hide": true,
-        "type": 'string'
-      },
+      
       "REMARK": {
         "title": '备注',
+        "isTabs":true,
+        "hide": true,
         "type": 'string',
         "inputWidth": 12,
         "editor": {
           "type": 'textarea'
         }
-      },
-      "NEW_DATA": {
-        "title": '输入的时间',
-        "type": 'string'
       }
     }
     //隐藏，hide=true的字段
     this.settings.columns = ServerDataSource.ReMoveHideItem(this.configJson);
+
   }
 
   ngOnInit() {
@@ -211,7 +203,8 @@ export class QueryListPage implements OnInit {
    * @param event 添加事件
    */
   onSave(event): void {
-    console.log(event.data)
+    console.log(this.smartTable)
+    console.log(event)
     let add = this.commonService.ShowModal({ class: 'modal-lg' })
     add.content.SetSettingsColumns(this.configJson)
 

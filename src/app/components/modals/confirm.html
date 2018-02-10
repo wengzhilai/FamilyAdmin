@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body">
   <div class="row">
-    <ng-container *ngFor="let item of inputs;index as i">
+    <ng-container *ngFor="let item of inputs | JsonFilter:'isTabs':false">
       <div class="col-sm-{{item.inputWidth?item.inputWidth:6}}" *ngIf="item.editable==null || item.editable==true">
         <div class="form-group">
           <label for="input{{i}}">{{item.placeholder}}</label>
@@ -22,6 +22,16 @@
       </div>
     </ng-container>
   </div>
+  <div class="row" style="height:300px">
+        <nb-card>
+          <nb-tabset>
+            <nb-tab tabTitle="{{item.placeholder}}" *ngFor="let item of inputs | JsonFilter:'isTabs':true">
+                <textarea id="input{{i}}" [(ngModel)]="bean[item.name]" rows="8" placeholder="{{item.placeholder}}" class="form-control"></textarea>
+              
+            </nb-tab>
+          </nb-tabset>
+        </nb-card>
+      </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" (click)="confirm()">{{OkText}}</button>

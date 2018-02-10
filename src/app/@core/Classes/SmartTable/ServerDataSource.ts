@@ -46,6 +46,7 @@ export class ServerDataSource extends LocalDataSource {
     return {
       noDataMessage: "无数据",
       mode: "external",
+      selectMode:"multi",
       add: {
         addButtonContent: '<i class="nb-plus"></i>',
         createButtonContent: '<i class="nb-checkmark"></i>',
@@ -61,6 +62,7 @@ export class ServerDataSource extends LocalDataSource {
       },
       actions: {
         columnTitle: "操作",
+        position:"right"
       },
       columns: {}
     }

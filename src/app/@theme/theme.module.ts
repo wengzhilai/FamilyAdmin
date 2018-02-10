@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppTranslationModule } from '../app.translation.module';
-
+import { PipesModule } from "./pipes/pipes.module";
 
 import {
   NbActionsModule,
@@ -42,7 +42,8 @@ const BASE_MODULES = [
   CommonModule, 
   FormsModule, 
   ReactiveFormsModule,
-  AppTranslationModule
+  AppTranslationModule,
+  PipesModule,
 ];
 
 const NB_MODULES = [

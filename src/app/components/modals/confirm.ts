@@ -45,23 +45,26 @@ export class ModalConfirmPage {
      * @param columns ng2-smart-table的setting.columns
      */
     SetSettingsColumns(columnsJson) {
+        this.inputs=[]
         for (const key in columnsJson) {
             this.inputs.push({
                 name: key,
                 placeholder: columnsJson[key].title,
                 type: columnsJson[key].type,
                 inputWidth: columnsJson[key].inputWidth,
-                editable:columnsJson[key].editable,
-                editor:columnsJson[key].editor,
+                editable: columnsJson[key].editable,
+                editor: columnsJson[key].editor,
+                isTabs: columnsJson[key].isTabs ? true : false,
             })
 
-            if (columnsJson[key].defaultValue!=null){
-                this.bean[key]=columnsJson[key].defaultValue
+            if (columnsJson[key].defaultValue != null) {
+                this.bean[key] = columnsJson[key].defaultValue
             }
-            
+
             if (columnsJson[key].editable != false) {
                 this.saveKeys.push(key)
             }
         }
+        // console.log(this.inputs)
     }
 }

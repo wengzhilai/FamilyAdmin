@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { ToPostService } from '../../../@core/Service/ToPost.Service';
 import { CommonService } from '../../../@core/Service/Common.Service';
 import { RequestPagesModel } from "../../../@core/Model/Transport/RequestPagesModel";
@@ -14,13 +13,14 @@ import { concat } from 'rxjs/observable/concat';
 import { SmartTableFormatValuePage } from "../../../components/SmartTable/formatValue";
 import { fail } from 'assert';
 
-
 @Component({
   selector: 'query',
   templateUrl: './query.html',
   styleUrls: ['./query.scss']
 })
 export class QueryQueryComponent implements OnInit {
+  @ViewChild('smartTable') smartTable: ElementRef;
+
   source: ServerDataSource;
   LoadSetting: boolean = false;
   /**
@@ -36,7 +36,6 @@ export class QueryQueryComponent implements OnInit {
   code: any;
   constructor(
     private routerIonfo: ActivatedRoute,
-    private service: SmartTableService,
     private toPostService: ToPostService,
     private commonService: CommonService,
     http: Http,
@@ -64,9 +63,11 @@ export class QueryQueryComponent implements OnInit {
           }
         }
         this.settings.columns = tempCol
-        console.log(this.settings.columns)
         this.LoadSetting = true
-
+        //配置是否有筛选框
+        if (data.Data.SHOW_CHECKBOX != 1) {
+          this.settings.selectMode = "single"
+        }
         this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/query' }, this.code);
 
 
@@ -75,6 +76,15 @@ export class QueryQueryComponent implements OnInit {
         this.commonService.hideLoading()
       }
     }, (x) => {
+      console.log(x)
+    })
+  }
+
+  onSave(e) {
+    // console.log(this.source.getAll())
+    console.log(this.smartTable)
+    console.log(e)
+    this.source.getFilteredAndSorted().then(x => {
       console.log(x)
     })
   }
