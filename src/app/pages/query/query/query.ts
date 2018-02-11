@@ -22,6 +22,16 @@ export class QueryQueryComponent implements OnInit {
   @ViewChild('smartTable') smartTable: ElementRef;
 
   source: ServerDataSource;
+  queryEnt: any = {};
+  /**
+   * 表头按钮
+   */
+  headBtnSet: Array<any> = [];
+  /**
+   * 行按钮
+   */
+  rowBtnSet: Array<any> = [];
+
   LoadSetting: boolean = false;
   /**
    * 用于绑定table的设置
@@ -31,8 +41,7 @@ export class QueryQueryComponent implements OnInit {
    * 读取配置文件的设置
    */
   configJson: any = {}
-
-
+  selectedArr = []
   code: any;
   constructor(
     private routerIonfo: ActivatedRoute,
@@ -52,10 +61,20 @@ export class QueryQueryComponent implements OnInit {
     this.toPostService.Post("query/single_code", postClass).then((data: AppReturnDTO) => {
       this.commonService.hideLoading()
       if (data.IsSuccess) {
+        this.queryEnt = data.Data
         //隐藏，hide=true的字段
-        let t = ""
-        eval("t=" + data.Data.QUERY_CFG_JSON)
+        let t: any = {}
+        //设置列配置
+        eval("t=" + this.queryEnt.QUERY_CFG_JSON)
         this.configJson = t
+        //设置表头按钮配置
+        eval("t=" + this.queryEnt.HEARD_BTN)
+        this.headBtnSet = t
+        //读取行按钮
+        eval("t=" + this.queryEnt.ROWS_BTN)
+        this.rowBtnSet = t
+        if (this.rowBtnSet == null) this.rowBtnSet = []
+
         let tempCol = ServerDataSource.ReMoveHideItem(this.configJson);
         for (const item in tempCol) {
           if (tempCol[item]["renderComponent"] == "SmartTableFormatValuePage") {
@@ -65,9 +84,22 @@ export class QueryQueryComponent implements OnInit {
         this.settings.columns = tempCol
         this.LoadSetting = true
         //配置是否有筛选框
-        if (data.Data.SHOW_CHECKBOX != 1) {
+        if (this.queryEnt.SHOW_CHECKBOX != 1) {
           this.settings.selectMode = "single"
         }
+
+
+        if (this.rowBtnSet.length > 1) {
+          this.settings.actions.edit = true
+          this.settings.edit.editButtonContent = '<i class="' + this.rowBtnSet[0].class + '"></i>'
+        }
+        if (this.rowBtnSet.length > 2) {
+          this.settings.actions.edit = true
+          this.settings.delete.deleteButtonContent = '<i class="' + this.rowBtnSet[1].class + '"></i>'
+        }
+
+
+
         this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/query' }, this.code);
 
 
@@ -80,13 +112,61 @@ export class QueryQueryComponent implements OnInit {
     })
   }
 
-  onSave(e) {
-    // console.log(this.source.getAll())
-    console.log(this.smartTable)
-    console.log(e)
-    this.source.getFilteredAndSorted().then(x => {
-      console.log(x)
-    })
+
+  userRowSelect(event) {
+    this.selectedArr = event.selected
+    console.log(this.selectedArr)
   }
 
+  /**
+   * 表头按钮事件
+   * @param event 
+   */
+  HeadBtnClick(nowThis, event) {
+    if (event != null) {
+      eval(event)
+    }
+  }
+
+
+  onSave(nowThis, event) {
+    if(this.rowBtnSet.length>0){
+      this.Add(this.rowBtnSet[0].apiUrl, event.data)
+    }
+  }
+
+
+  Add(apiUrl, data = {}): void {
+    console.log(this.smartTable)
+    console.log(event)
+    let add = this.commonService.ShowModal({ class: 'modal-lg' })
+    add.content.SetSettingsColumns(this.configJson)
+    add.content.bean = data
+    add.content.message = "修改查询"
+    if (data != null) {
+      add.content.message = "添加查询"
+    }
+    add.content.OkHandler = (bean, saveKeys) => {
+      if (window.confirm('确定要保存吗？')) {
+        let postClass: RequestSaveModel = new RequestSaveModel();
+        postClass.Data = bean;
+        postClass.SaveKeys = saveKeys;
+        this.toPostService.Post(apiUrl, postClass).then((data: AppReturnDTO) => {
+          console.log(data)
+          if (data.IsSuccess) {
+            this.source.refresh()
+            add.hide()
+          }
+          else {
+            this.commonService.hint(data.Msg)
+          }
+        });
+      } else {
+        add.hide()
+      }
+    }
+    add.content.CancelHandler = (bean) => {
+      add.hide()
+    }
+  }
 }

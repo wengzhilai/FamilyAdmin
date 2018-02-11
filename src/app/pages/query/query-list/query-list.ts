@@ -24,6 +24,7 @@ export class QueryListPage implements OnInit {
   settings: any = ServerDataSource.getDefaultSetting();
 
   configJson: any = {}
+  selectedArr=[]
   constructor(
     private service: SmartTableService,
     private toPostService: ToPostService,
@@ -254,6 +255,11 @@ export class QueryListPage implements OnInit {
         }
       });
     }
+  }
+
+  userRowSelect(event){
+    this.selectedArr=event.selected
+    console.log(this.selectedArr)
   }
 
 }

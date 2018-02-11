@@ -11,7 +11,7 @@ import { SmartTableFormatValuePage } from "../../components/SmartTable/formatVal
 import { ComponentsModule } from "../../components/components.module";
 import { QueryQueryComponent } from './query/query';
 import { QueryComponent } from './query.component';
-
+import { AccordionModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -20,7 +20,8 @@ import { QueryComponent } from './query.component';
     QueryRoutingModule,
     ServiceModule,
     ComponentsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    AccordionModule.forRoot()
   ],
   declarations: [
     QueryListPage,

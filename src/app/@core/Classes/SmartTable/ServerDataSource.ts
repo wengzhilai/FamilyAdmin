@@ -47,6 +47,7 @@ export class ServerDataSource extends LocalDataSource {
       noDataMessage: "无数据",
       mode: "external",
       selectMode:"multi",
+      hideSubHeader:true, //隐藏默认的过滤行
       add: {
         addButtonContent: '<i class="nb-plus"></i>',
         createButtonContent: '<i class="nb-checkmark"></i>',
@@ -62,7 +63,7 @@ export class ServerDataSource extends LocalDataSource {
       },
       actions: {
         columnTitle: "操作",
-        position:"right"
+        // position:"right"
       },
       columns: {}
     }

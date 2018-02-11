@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
 
 @Component({
     selector: 'ngx-confirmModal',
@@ -17,6 +18,7 @@ export class ModalConfirmPage {
     OkHandler: any;
     CancelHandler: any
     inputs = []
+    inputsIsTabs =[]
     bean: any = {}
 
     _columns: any = {}
@@ -32,6 +34,7 @@ export class ModalConfirmPage {
             this.CancelHandler(this.bean, this.saveKeys);
         }
     }
+    
     /**
      * 用于解译setting.columns
      * {
@@ -65,6 +68,9 @@ export class ModalConfirmPage {
                 this.saveKeys.push(key)
             }
         }
+
+        this.inputsIsTabs=new JsonFilterPipe().transform(this.inputs,"isTabs",true);
+        
         // console.log(this.inputs)
     }
 }
