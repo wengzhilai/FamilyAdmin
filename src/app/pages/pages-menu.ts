@@ -37,6 +37,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/pages/query/query/module'
       },
       {
+        title: '查询管理',
+        icon: 'ion-person-stalker',
+        link: '/pages/query/query/query'
+      },
+      {
         title: '用户管理',
         icon: 'ion-person-stalker',
         link: '/pages/query/query/user'

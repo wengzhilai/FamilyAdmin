@@ -58,6 +58,7 @@ export class ModalConfirmPage {
                 editable: columnsJson[key].editable,
                 editor: columnsJson[key].editor,
                 isTabs: columnsJson[key].isTabs ? true : false,
+                tooltip: columnsJson[key].tooltip,
             })
 
             if (columnsJson[key].defaultValue != null) {

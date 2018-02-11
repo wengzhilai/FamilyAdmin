@@ -5,7 +5,7 @@ import { ModalComponent } from "./modal.component";
 import { ModalLoadingPage } from "./modals/loading";
 import { ThemeModule } from '../@theme/theme.module';
 import { SmartTableFormatValuePage } from "./SmartTable/formatValue";
-
+import { TooltipModule } from 'ngx-bootstrap';
 @NgModule({
     declarations: [
         ModalConfirmPage,
@@ -16,6 +16,7 @@ import { SmartTableFormatValuePage } from "./SmartTable/formatValue";
     imports: [
         CommonModule,
         ThemeModule,
+        TooltipModule.forRoot(),
     ],
     exports: [
         CommonModule,

@@ -88,7 +88,6 @@ export class QueryQueryComponent implements OnInit {
           this.settings.selectMode = "single"
         }
 
-
         if (this.rowBtnSet.length > 1) {
           this.settings.actions.edit = true
           this.settings.edit.editButtonContent = '<i class="' + this.rowBtnSet[0].class + '"></i>'
@@ -97,12 +96,7 @@ export class QueryQueryComponent implements OnInit {
           this.settings.actions.edit = true
           this.settings.delete.deleteButtonContent = '<i class="' + this.rowBtnSet[1].class + '"></i>'
         }
-
-
-
         this.source = new ServerDataSource(this.toPostService, this.commonService, { endPoint: 'query/query' }, this.code);
-
-
       }
       else {
         this.commonService.hideLoading()
@@ -129,9 +123,35 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
+    /**
+   * 
+   * @param event 添加事件
+   */
+  onDelete(event): void {
+
+    if(this.rowBtnSet.length>1){
+      this.DeleteApi(this.rowBtnSet[1].apiUrl, event.data.ID,this.rowBtnSet[1].confirmTip)
+    }
+    
+  }
+
   onSave(nowThis, event) {
     if(this.rowBtnSet.length>0){
       this.Add(this.rowBtnSet[0].apiUrl, event.data)
+    }
+  }
+  
+  DeleteApi(apiUrl,Key,confirmTip){
+    if (window.confirm(confirmTip)) {
+      this.commonService.showLoading();
+      let postClass: PostBaseModel = new PostBaseModel();
+      postClass.Key = Key;
+      this.toPostService.Post(apiUrl, postClass).then((data: AppReturnDTO) => {
+        this.commonService.hideLoading()
+        if (data.IsSuccess) {
+          this.source.refresh()
+        }
+      });
     }
   }
 
