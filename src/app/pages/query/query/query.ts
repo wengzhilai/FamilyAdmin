@@ -122,26 +122,37 @@ export class QueryQueryComponent implements OnInit {
     }
   }
 
+  onExportXls() {
 
-    /**
-   * 
-   * @param event 添加事件
-   */
+    let postBean: RequestPagesModel = new RequestPagesModel();
+    postBean.Key=this.code
+    this.toPostService.Post("view/export_query",postBean).then(x=>{
+      console.log(x)
+    })
+    // console.log(this.source.getFilter());
+    // console.log(this.source.getSort());
+  }
+
+
+  /**
+ * 
+ * @param event 添加事件
+ */
   onDelete(event): void {
 
-    if(this.rowBtnSet.length>1){
-      this.DeleteApi(this.rowBtnSet[1].apiUrl, event.data.ID,this.rowBtnSet[1].confirmTip)
+    if (this.rowBtnSet.length > 1) {
+      this.DeleteApi(this.rowBtnSet[1].apiUrl, event.data.ID, this.rowBtnSet[1].confirmTip)
     }
-    
+
   }
 
   onSave(nowThis, event) {
-    if(this.rowBtnSet.length>0){
+    if (this.rowBtnSet.length > 0) {
       this.Add(this.rowBtnSet[0].apiUrl, event.data)
     }
   }
-  
-  DeleteApi(apiUrl,Key,confirmTip){
+
+  DeleteApi(apiUrl, Key, confirmTip) {
     if (window.confirm(confirmTip)) {
       this.commonService.showLoading();
       let postClass: PostBaseModel = new PostBaseModel();
