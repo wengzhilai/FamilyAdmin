@@ -12,6 +12,7 @@ import { ViewCell } from 'ng2-smart-table';
 import { concat } from 'rxjs/observable/concat';
 import { SmartTableFormatValuePage } from "../../../components/SmartTable/formatValue";
 import { fail } from 'assert';
+import { Config } from '../../../@core/Classes/Config';
 
 @Component({
   selector: 'query',
@@ -43,23 +44,42 @@ export class QueryQueryComponent implements OnInit {
   configJson: any = {}
   selectedArr = []
   code: any;
+  thisUrl: string = ""
   constructor(
     private routerIonfo: ActivatedRoute,
     private toPostService: ToPostService,
     private commonService: CommonService,
     http: Http,
   ) {
-
+    console.log(this.routerIonfo.snapshot)
+    this.CheckUrl();
   }
 
-  ngOnInit() {
+  CheckUrl() {
+    setTimeout(() => {
+      if (window.location.href.indexOf("/pages/query/query/") > -1) {
+        if (window.location.href != this.thisUrl) {
+          this.thisUrl = window.location.href
+          this.LoadSetting=false;
+          this.LoadData().then(x => {
+            // this.settings = this.settings;
+            this.LoadSetting=true;
+            
+            this.CheckUrl()
+          })
+        }
+        else {
+          this.CheckUrl()
+        }
+      }
+    }, 1000)
+  }
+  LoadData() {
     this.code = this.routerIonfo.snapshot.params["code"];
 
-    this.commonService.showLoading();
     let postClass: PostBaseModel = new PostBaseModel();
     postClass.Key = this.code;
-    this.toPostService.Post("query/single_code", postClass).then((data: AppReturnDTO) => {
-      this.commonService.hideLoading()
+    return this.toPostService.Post("query/single_code", postClass).then((data: AppReturnDTO) => {
       if (data.IsSuccess) {
         this.queryEnt = data.Data
         //隐藏，hide=true的字段
@@ -105,7 +125,9 @@ export class QueryQueryComponent implements OnInit {
       console.log(x)
     })
   }
+  ngOnInit() {
 
+  }
 
   userRowSelect(event) {
     this.selectedArr = event.selected
@@ -125,9 +147,16 @@ export class QueryQueryComponent implements OnInit {
   onExportXls() {
 
     let postBean: RequestPagesModel = new RequestPagesModel();
-    postBean.Key=this.code
-    this.toPostService.Post("view/export_query",postBean).then(x=>{
+    postBean.Key = this.code
+    this.toPostService.Post("view/export_query", postBean).then(x => {
       console.log(x)
+      // Blob转化为链接
+      var link = document.createElement("a");
+      link.setAttribute("href", Config.imgUrl + x.Msg);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     })
     // console.log(this.source.getFilter());
     // console.log(this.source.getSort());
@@ -167,14 +196,14 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
-  Add(apiUrl, data = {}): void {
+  Add(apiUrl, defaultData = null): void {
     console.log(this.smartTable)
     console.log(event)
     let add = this.commonService.ShowModal({ class: 'modal-lg' })
     add.content.SetSettingsColumns(this.configJson)
-    add.content.bean = data
     add.content.message = "修改查询"
-    if (data != null) {
+    if (defaultData != null) {
+      add.content.bean = defaultData
       add.content.message = "添加查询"
     }
     add.content.OkHandler = (bean, saveKeys) => {
@@ -199,5 +228,9 @@ export class QueryQueryComponent implements OnInit {
     add.content.CancelHandler = (bean) => {
       add.hide()
     }
+  }
+
+  ReLoad() {
+    this.source.refresh()
   }
 }

@@ -71,7 +71,11 @@ export class ModalConfirmPage {
         }
 
         this.inputsIsTabs=new JsonFilterPipe().transform(this.inputs,"isTabs",true);
-        
-        // console.log(this.inputs)
+        //传入的配置
+        console.log("传入的配置")
+        console.log(this.inputs)
+        //传入的默认值
+        console.log("传入的默认值")
+        console.log(this.bean)
     }
 }

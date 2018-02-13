@@ -8,7 +8,7 @@
       <div class="alert alert-primary">
         {{queryEnt.REMARK}}
         <span class="float-right">
-          <i class="nb-loop"></i>
+          <i (click)="ReLoad()" class="nb-loop"></i>
           <i (click)="ShowMore=(!ShowMore)" class="ion-arrow-resize {{ ShowMore==true?'txtGray':''}}"></i>
         </span>
       </div>
