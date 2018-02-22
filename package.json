@@ -56,6 +56,7 @@
     "ng2-tree": "2.0.0-rc.4",
     "ngx-bootstrap": "^2.0.2",
     "ngx-echarts": "2.0.0",
+    "ngx-treeview": "^2.0.4",
     "normalize.css": "6.0.0",
     "pace-js": "1.0.2",
     "roboto-fontface": "0.8.0",

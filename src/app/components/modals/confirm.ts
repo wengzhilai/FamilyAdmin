@@ -57,7 +57,7 @@ export class ModalConfirmPage {
                 inputWidth: columnsJson[key].inputWidth,
                 editable: columnsJson[key].editable,
                 editor: columnsJson[key].editor,
-                isTabs: columnsJson[key].isTabs ? true : false,
+                isTabs: columnsJson[key].isTabs ? true : false, //是否用tabs显示
                 tooltip: columnsJson[key].tooltip,
             })
 

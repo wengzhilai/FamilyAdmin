@@ -133,8 +133,8 @@ export class CommonService {
    * @param content 
    * @param config 
    */
-  ShowModal(config?: any) {
-    return this.modalService.show(ModalConfirmPage, config);
+  ShowModal(config?: any,openModal:any=ModalConfirmPage) {
+    return this.modalService.show(openModal, config);
   };
 
   /**

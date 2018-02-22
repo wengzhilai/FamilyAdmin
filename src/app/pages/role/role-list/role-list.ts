@@ -7,6 +7,8 @@ import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
 import { RequestSaveModel, PostBaseModel } from "../../../@core/Model/Transport";
 import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
 import { Http } from '@angular/http';
+import { RoleEditComponent } from '../role-edit/role-edit.component';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -20,6 +22,8 @@ export class RoleListPage implements OnInit {
 
   constructor(
     private service: SmartTableService,
+    private modalService: BsModalService,
+    
     private toPostService: ToPostService,
     private commonService: CommonService,
     http: Http,
@@ -48,9 +52,11 @@ export class RoleListPage implements OnInit {
    */
   onSave(event): void {
     console.log(event.data)
-    let add = this.commonService.ShowModal({ class: 'modal-lg' })
+    // let add = this.commonService.ShowModal({ class: 'modal-lg' },RoleEditComponent)
+    let add =this.modalService.show(RoleEditComponent, { class: 'modal-lg'})
+    add.content.key=event.data.ID
     add.content.SetSettingsColumns(this.settings.columns)
-
+    add.content.ngOnInit()
     add.content.message = "修改角色"
     if (event.data != null) {
       add.content.bean = event.data
