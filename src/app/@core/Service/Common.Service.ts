@@ -13,7 +13,6 @@ import { ModalLoadingPage } from "../../components/modals/loading";
 
 import { ModalConfirmPage } from "../../components/modals/confirm";
 import { ToasterService, ToasterConfig, Toast, BodyOutputType } from 'angular2-toaster';
-import { fail } from 'assert';
 
 
 // declare var wx;
@@ -38,9 +37,9 @@ export class CommonService {
   }
 
   /**
- * core：表示桌面平台
- * @param name 
- */
+   * core：表示桌面平台
+   * @param name 
+   */
   PlatformsExists(name: string): boolean {
     return true
   }
@@ -122,8 +121,8 @@ export class CommonService {
       msg: msg.replace(/\\r\\n/g, "<br />"),
     };
 
-    this.modalService.config.ignoreBackdropClick=true;
-    
+    this.modalService.config.ignoreBackdropClick = true;
+
     this.loader = this.modalService.show(ModalLoadingPage, { initialState });
 
   };
@@ -133,7 +132,7 @@ export class CommonService {
    * @param content 
    * @param config 
    */
-  ShowModal(config?: any,openModal:any=ModalConfirmPage) {
+  ShowModal(config?: any, openModal: any = ModalConfirmPage) {
     return this.modalService.show(openModal, config);
   };
 
@@ -282,11 +281,11 @@ export class CommonService {
         msg.replace(/\\r\\n/g, "<br />")
       ],
       title: title.replace(/\r/g, "<br />"),
-      closeBtnName:[this.translate.instant("public.Okay")]
+      closeBtnName: [this.translate.instant("public.Okay")]
     };
 
-    this.modalService.config.ignoreBackdropClick=true;
-    
+    this.modalService.config.ignoreBackdropClick = true;
+
     let bsModalRef = this.modalService.show(ModalComponent, { initialState });
 
 
@@ -455,24 +454,24 @@ export class CommonService {
 
 
 
-  Confirm(title, message, OkHandler, CancelHandler, OkText = "确定", ChancelText = "取消",inputs=[]) {
+  Confirm(title, message, OkHandler, CancelHandler, OkText = "确定", ChancelText = "取消", inputs = []) {
 
     let modalRef = this.modalService.show(ModalConfirmPage, { class: 'modal-sm' });
-    modalRef.content.message=message
-    modalRef.content.OkText=OkText
-    modalRef.content.ChancelText=ChancelText
-    modalRef.content.inputs=inputs
-    if(inputs.length>0){
+    modalRef.content.message = message
+    modalRef.content.OkText = OkText
+    modalRef.content.ChancelText = ChancelText
+    modalRef.content.inputs = inputs
+    if (inputs.length > 0) {
       inputs.forEach(element => {
-        modalRef.content.bean[element.name]=element.value
+        modalRef.content.bean[element.name] = element.value
       });
     }
-    modalRef.content.OkHandler=(x)=>{
+    modalRef.content.OkHandler = (x) => {
       modalRef.hide()
       OkHandler(x)
     }
 
-    modalRef.content.CancelHandler=(x)=>{
+    modalRef.content.CancelHandler = (x) => {
       modalRef.hide()
       CancelHandler(x)
     }
@@ -496,4 +495,45 @@ export class CommonService {
 
   }
 
+  JsonToTreeJson(inJson: Array<any>, valueField, textField, childrenField) {
+    let reArr: Array<any> = []
+    for (let index = inJson.length - 1; index >= 0; index--) {
+      const element = inJson[index];
+      if (element[childrenField] == null || element[childrenField] == "") {
+        reArr.push({ text: element[textField], value: element[valueField] })
+        inJson.splice(index,1)
+      }
+    }
+    for (let index = 0; index < 4; index++) {
+      for (let index = inJson.length - 1; index >= 0; index--) {
+        const element = inJson[index];
+        if (element[childrenField] != null && element[childrenField] != "") {
+          reArr = this.JsonToTreeJsonAddChildren(reArr, element, textField, valueField, childrenField)
+          inJson.splice(index,1)
+        }
+      }
+    }
+    return reArr;
+  }
+  JsonToTreeJsonAddChildren(inJson: Array<any>, addJson: any, textField: string, valueField: string, childrenField: string) {
+    if (inJson == null) {
+      inJson = []
+    }
+    if (addJson == null || addJson[valueField] == null || addJson[valueField] == "") {
+      return inJson;
+    }
+    for (let index = 0; index < inJson.length; index++) {
+      const element = inJson[index];
+      if (element["value"] == addJson[childrenField]) {
+        if (element["children"] == null) element["children"] = [];
+        inJson[index]["children"].push({ text: addJson[textField], value: addJson[valueField] })
+      }
+      else {
+        if (element["children"] != null) {
+          inJson[index]["children"] = this.JsonToTreeJsonAddChildren(element["children"], addJson, textField, valueField, childrenField)
+        }
+      }
+    }
+    return inJson;
+  }
 }
