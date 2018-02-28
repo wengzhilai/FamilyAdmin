@@ -19,7 +19,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppTranslationModule } from './app.translation.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToasterModule } from 'angular2-toaster';
-
+import { TreeviewModule } from 'ngx-treeview';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +36,7 @@ import { ToasterModule } from 'angular2-toaster';
     ModalModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),
-
+    TreeviewModule.forRoot(),
   ],
   bootstrap: [AppComponent],
   providers: [

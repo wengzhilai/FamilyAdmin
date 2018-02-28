@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { JsonFilterPipe } from "../../../@theme/pipes/JsonFilter";
 import { ToPostService, CommonService } from '../../../@core/Service';
-import { TreeviewItem, TreeviewConfig } from 'ngx-treeview';
+import {
+  TreeviewI18n, TreeviewItem, TreeviewConfig, TreeviewHelper, TreeviewComponent,
+  TreeviewEventParser, OrderDownlineTreeviewEventParser, DownlineTreeviewItem
+} from 'ngx-treeview';
 
 
 @Component({
@@ -12,22 +15,22 @@ import { TreeviewItem, TreeviewConfig } from 'ngx-treeview';
 export class RoleEditComponent {
 
   key: string = ""
-  
+
   items: TreeviewItem[];
   config = TreeviewConfig.create({
-      hasAllCheckBox: false,
-      hasFilter: false,
-      hasCollapseExpand: false,
-      decoupleChildFromParent: false,
-      maxHeight: 100
+    hasAllCheckBox: false,
+    hasFilter: false,
+    hasCollapseExpand: false,
+    decoupleChildFromParent: false,
+    maxHeight: 100
   });
   constructor(
     private toPostService: ToPostService,
     private commonService: CommonService,
-  ) { 
-    this.toPostService.Post("module/list",{Key:this.key}).then(x=>{
+  ) {
+    this.toPostService.Post("module/list", { Key: this.key }).then(x => {
 
-      this.items=this.commonService.JsonToTreeJson(x.Data,"ID","NAME","PARENT_ID")
+      this.items = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID")
       console.log(this.items)
     })
 
@@ -35,7 +38,7 @@ export class RoleEditComponent {
 
   ngOnInit() {
     if (this.key != "") {
-      this.toPostService.Post("role/single",{Key:this.key}).then(x=>{
+      this.toPostService.Post("role/single", { Key: this.key }).then(x => {
         console.log(x)
       })
     }
@@ -106,5 +109,9 @@ export class RoleEditComponent {
     //传入的默认值
     console.log("传入的默认值")
     console.log(this.bean)
+  }
+
+  onSelectedChange(downlineItems: DownlineTreeviewItem[]) {
+
   }
 }
