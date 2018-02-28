@@ -11,12 +11,12 @@ import { BookService } from './book.service';
 })
 export class TreeviewComponent implements OnInit {
     dropdownEnabled = true;
-    items: TreeviewItem[];
+    items: any;
     values: number[];
     config = TreeviewConfig.create({
-        hasAllCheckBox: true,
-        hasFilter: true,
-        hasCollapseExpand: true,
+        hasAllCheckBox: false,
+        hasFilter: false,
+        hasCollapseExpand: false,
         decoupleChildFromParent: false,
         maxHeight: 400
     });
@@ -38,6 +38,12 @@ export class TreeviewComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.items = this.service.getBooks();
+        this.items =[ {
+            "text": "Children", "value": 1, "collapsed": true, "children": [
+                { text: 'Baby 3-5', value: 11 },
+                { text: 'Baby 6-8', value: 12 },
+                { text: 'Baby 9-12', value: 13 }
+            ]
+        }];
     }
 }

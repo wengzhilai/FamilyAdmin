@@ -16,12 +16,9 @@ export class RoleEditComponent {
 
   key: string = ""
 
-  items: TreeviewItem[];
+  items: Array<TreeviewItem> = [];
   config = TreeviewConfig.create({
     hasAllCheckBox: false,
-    hasFilter: false,
-    hasCollapseExpand: false,
-    decoupleChildFromParent: false,
     maxHeight: 100
   });
   constructor(
@@ -29,9 +26,10 @@ export class RoleEditComponent {
     private commonService: CommonService,
   ) {
     this.toPostService.Post("module/list", { Key: this.key }).then(x => {
-
-      this.items = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID")
-      console.log(this.items)
+      let allItem = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID");
+      allItem.forEach(element => {
+        this.items.push(new TreeviewItem(element))
+      });
     })
 
   }

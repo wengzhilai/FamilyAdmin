@@ -10,16 +10,21 @@
       <div class="col-sm-{{item.inputWidth?item.inputWidth:6}}" *ngIf="item.editable==null || item.editable==true">
         <div class="form-group">
           <label for="input{{i}}" tooltip="{{item.tooltip}}">{{item.placeholder}}</label>
-          <select *ngIf="item.editor!=null && item.editor.type=='list'" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
-            <option *ngFor="let opt of item.editor.config.list" value="{{opt.value}}">{{opt.title}}</option>
-          </select>
-          <select *ngIf="item.editor!=null && item.editor.type=='completer'" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
-            <option *ngFor="let opt of item.editor.config.completer.data" value="{{opt.value}}">{{opt.title}}</option>
-          </select>
-          <textarea *ngIf="item.editor!=null && item.editor.type=='textarea'" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3"
-            placeholder="{{item.placeholder}}" class="form-control"></textarea>
-          <input *ngIf="item.editor==null || item.editor.type=='text'" id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}"
-            class="form-control" placeholder="{{item.placeholder}}">
+          
+          <input *ngIf="item.editor==null || item.editor.type=='text';else elseBlock" id="input{{i}}" [(ngModel)]="bean[item.name]"
+            type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
+          <ng-template #elseBlock>
+            <ng-container [ngSwitch]="item.editor.type">
+              <select *ngSwitchCase="list" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
+                <option *ngFor="let opt of item.editor.config.list" value="{{opt.value}}">{{opt.title}}</option>
+              </select>
+              <select *ngSwitchCase="completer" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
+                <option *ngFor="let opt of item.editor.config.completer.data" value="{{opt.value}}">{{opt.title}}</option>
+              </select>
+              <textarea *ngSwitchCase="textarea" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3" placeholder="{{item.placeholder}}"
+                class="form-control"></textarea>
+            </ng-container>
+          </ng-template>
         </div>
       </div>
     </ng-container>
@@ -28,7 +33,7 @@
     <nb-card>
       <nb-tabset>
         <nb-tab tabTitle="{{item.placeholder}}" tooltip="{{item.tooltip}}" *ngFor="let item of inputsIsTabs">
-          <textarea  [(ngModel)]="bean[item.name]" rows="8" placeholder="{{item.placeholder}}" class="form-control"></textarea>
+          <textarea [(ngModel)]="bean[item.name]" rows="8" placeholder="{{item.placeholder}}" class="form-control"></textarea>
         </nb-tab>
       </nb-tabset>
     </nb-card>
