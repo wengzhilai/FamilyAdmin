@@ -29,6 +29,7 @@ export class ModalConfirmPage {
             this.OkHandler(this.bean, this.saveKeys);
         }
     }
+    
     decline(): void {
         if (this.CancelHandler != null) {
             this.CancelHandler(this.bean, this.saveKeys);

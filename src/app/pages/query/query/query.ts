@@ -13,7 +13,10 @@ import { concat } from 'rxjs/observable/concat';
 import { SmartTableFormatValuePage } from "../../../components/SmartTable/formatValue";
 import { fail } from 'assert';
 import { Config } from '../../../@core/Classes/Config';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
+import { ModalConfirmPage } from "../../../components/modals/confirm";
+import { RoleEditComponent } from "../../../components/role-edit/role-edit.component";
 @Component({
   selector: 'query',
   templateUrl: './query.html',
@@ -49,6 +52,8 @@ export class QueryQueryComponent implements OnInit {
     private routerIonfo: ActivatedRoute,
     private toPostService: ToPostService,
     private commonService: CommonService,
+    private modalService: BsModalService,
+    
     http: Http,
   ) {
     console.log(this.routerIonfo.snapshot)
@@ -163,7 +168,7 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
-  /**
+/**
  * 
  * @param event 添加事件
  */
@@ -175,9 +180,10 @@ export class QueryQueryComponent implements OnInit {
 
   }
 
+
   onSave(nowThis, event) {
     if (this.rowBtnSet.length > 0) {
-      this.Add(this.rowBtnSet[0].apiUrl, event.data)
+      this.Add(this.rowBtnSet[0].apiUrl,null, event.data)
     }
   }
 
@@ -196,10 +202,27 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
-  Add(apiUrl, defaultData = null): void {
+  Add(apiUrl,openModal: any = null, defaultData = null): void {
     console.log(this.smartTable)
     console.log(event)
-    let add = this.commonService.ShowModal({ class: 'modal-lg' })
+    if(openModal==null)
+    {
+      openModal=ModalConfirmPage
+    }
+    else{
+      switch (openModal) {
+        case "RoleEditComponent":
+          openModal=RoleEditComponent
+          break;
+        default:
+          openModal=ModalConfirmPage
+          break;
+      }
+    }
+    console.log("打开对话框")
+    console.log(openModal)
+    let add = this.modalService.show(openModal, { class: 'modal-lg' })
+    // let add = this.commonService.ShowModal({ class: 'modal-lg' },openModal)
     add.content.SetSettingsColumns(this.configJson)
     add.content.message = "修改查询"
     if (defaultData != null) {

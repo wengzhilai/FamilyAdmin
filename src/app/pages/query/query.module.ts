@@ -12,6 +12,8 @@ import { ComponentsModule } from "../../components/components.module";
 import { QueryQueryComponent } from './query/query';
 import { QueryComponent } from './query.component';
 import { AccordionModule } from 'ngx-bootstrap';
+import { RoleModule } from "../role/role.module";
+
 
 @NgModule({
   imports: [
@@ -21,7 +23,8 @@ import { AccordionModule } from 'ngx-bootstrap';
     ServiceModule,
     ComponentsModule,
     ModalModule.forRoot(),
-    AccordionModule.forRoot()
+    AccordionModule.forRoot(),
+    RoleModule,
   ],
   declarations: [
     QueryListPage,
@@ -29,7 +32,7 @@ import { AccordionModule } from 'ngx-bootstrap';
     QueryComponent,
   ],
   entryComponents: [
-    SmartTableFormatValuePage
+    SmartTableFormatValuePage,
   ],
   exports: [
   ],

@@ -5,6 +5,8 @@
   </button>
 </div>
 <div class="modal-body">
+
+
   <div class="row">
     <ng-container *ngFor="let item of inputs | JsonFilter:'isTabs':false;let i = index">
       <div class="col-sm-{{item.inputWidth?item.inputWidth:6}}" *ngIf="item.editable==null || item.editable==true">
@@ -23,7 +25,11 @@
               </select>
               <textarea *ngSwitchCase="'textarea'" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3" placeholder="{{item.placeholder}}"
                 class="form-control"></textarea>
-              <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
+              <ngx-treeview *ngSwitchCase="'treeview'" id="input{{i}}" [config]="config" [items]="items"
+                (selectedChange)="bean[item.name]=$event; onSelectedChange($event)">
+              </ngx-treeview>
+              <!-- <input  *ngSwitchCase="'treeview'" id="input{{i}}"  [(ngModel)]="bean[item.name]"
+            type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}"> -->
             </ng-container>
           </ng-template>
         </div>

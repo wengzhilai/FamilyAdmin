@@ -6,27 +6,28 @@ import { routedComponents, RoleRoutingModule } from './role.routes';
 import { AppTranslationModule } from '../../app.translation.module';
 import { RoleListPage } from './role-list/role-list';
 import { TreeviewModule } from 'ngx-treeview';
-import { RoleEditComponent } from './role-edit/role-edit.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ComponentsModule } from '../../components/components.module';
+
+import { RoleEditComponent } from '../../components/role-edit/role-edit.component';
 
 @NgModule({
   imports: [
     ThemeModule,
     Ng2SmartTableModule,
     RoleRoutingModule,
+    ComponentsModule,
     ModalModule.forRoot(),
     TreeviewModule.forRoot(),
   ],
   declarations: [
     routedComponents,
     RoleListPage,
-    RoleEditComponent,
   ],
   entryComponents: [
-    RoleEditComponent
+    RoleEditComponent,
   ],
   exports: [
-
   ],
 })
 export class RoleModule {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { JsonFilterPipe } from "../../../@theme/pipes/JsonFilter";
-import { ToPostService, CommonService } from '../../../@core/Service';
+import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
+import { ToPostService, CommonService } from '../../@core/Service';
 import {
   TreeviewI18n, TreeviewItem, TreeviewConfig, TreeviewHelper, TreeviewComponent,
   TreeviewEventParser, OrderDownlineTreeviewEventParser, DownlineTreeviewItem
@@ -21,6 +21,7 @@ export class RoleEditComponent {
     hasAllCheckBox: false,
     maxHeight: 100
   });
+
   constructor(
     private toPostService: ToPostService,
     private commonService: CommonService,
@@ -31,7 +32,6 @@ export class RoleEditComponent {
         this.items.push(new TreeviewItem(element))
       });
     })
-
   }
 
   ngOnInit() {
@@ -65,18 +65,7 @@ export class RoleEditComponent {
     }
   }
 
-  /**
-   * 用于解译setting.columns
-   * {
-   * ID:{
-   *   title: '描述', //标题
-   *   type: 'string', //类型
-   *   editable: false, //是否可以编辑
-   *   inputWidth: 12   //编辑框长度，最大值12
-   *   }
-   * }
-   * @param columns ng2-smart-table的setting.columns
-   */
+
   SetSettingsColumns(columnsJson) {
     this.inputs = []
     for (const key in columnsJson) {
@@ -110,6 +99,7 @@ export class RoleEditComponent {
   }
 
   onSelectedChange(downlineItems: DownlineTreeviewItem[]) {
-
+    console.log(downlineItems)
+    console.log(this.bean)
   }
 }

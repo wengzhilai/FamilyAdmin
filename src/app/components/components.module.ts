@@ -1,29 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalConfirmPage } from "./modals/confirm";
-import { ModalComponent } from "./modal.component";
 import { ModalLoadingPage } from "./modals/loading";
 import { ThemeModule } from '../@theme/theme.module';
 import { SmartTableFormatValuePage } from "./SmartTable/formatValue";
 import { TooltipModule } from 'ngx-bootstrap';
+import { RoleEditComponent } from "./role-edit/role-edit.component";
+import { TreeviewModule } from 'ngx-treeview';
+
 @NgModule({
     declarations: [
         ModalConfirmPage,
         SmartTableFormatValuePage,
-        ModalComponent,
         ModalLoadingPage,
+        RoleEditComponent,
     ],
     imports: [
         CommonModule,
         ThemeModule,
         TooltipModule.forRoot(),
+        TreeviewModule.forRoot(),
     ],
     exports: [
         CommonModule,
         ModalConfirmPage,
-        ModalComponent,
         ModalLoadingPage,
         SmartTableFormatValuePage,
+        RoleEditComponent,
     ]
 })
 export class ComponentsModule { }

@@ -8,7 +8,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { ServiceModule } from './Service/service.module';
 import { ComponentsModule } from "../components/components.module";
-import { ModalComponent } from "../components/modal.component";
 import { ModalLoadingPage } from "../components/modals/loading";
 import { ModalConfirmPage } from "../components/modals/confirm";
 
@@ -28,7 +27,6 @@ const NB_CORE_PROVIDERS = [
   exports: [
   ],
   entryComponents: [
-    ModalComponent,
     ModalLoadingPage,
     ModalConfirmPage,
   ],

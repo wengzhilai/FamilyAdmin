@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core'
 import { DataStrToStringPipe } from '../../@theme/pipes/DataStrToString';
 import { Config } from '../Classes/Config';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ModalComponent } from "../../components/modal.component";
 
 import { ModalLoadingPage } from "../../components/modals/loading";
 
@@ -286,7 +285,7 @@ export class CommonService {
 
     this.modalService.config.ignoreBackdropClick = true;
 
-    let bsModalRef = this.modalService.show(ModalComponent, { initialState });
+    let bsModalRef = this.modalService.show(ModalConfirmPage, { initialState });
 
 
 
@@ -485,7 +484,7 @@ export class CommonService {
    */
   Alert(title, message, OkHandler, OkText = "确定") {
 
-    const activeModal = this.modalService.show(ModalComponent, {
+    const activeModal = this.modalService.show(ModalConfirmPage, {
       backdrop: 'static',
     });
 

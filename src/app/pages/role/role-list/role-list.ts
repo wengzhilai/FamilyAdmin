@@ -7,7 +7,7 @@ import { AppReturnDTO } from "../../../@core/Model/Transport/AppReturnDTO";
 import { RequestSaveModel, PostBaseModel } from "../../../@core/Model/Transport";
 import { ServerDataSource } from "../../../@core/Classes/SmartTable/ServerDataSource";
 import { Http } from '@angular/http';
-import { RoleEditComponent } from '../role-edit/role-edit.component';
+import { RoleEditComponent } from '../../../components/role-edit/role-edit.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
 
