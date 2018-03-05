@@ -153,6 +153,7 @@ export class QueryQueryComponent implements OnInit {
     }
   }
 
+  /**导出Excel */
   onExportXls() {
 
     let postBean: RequestPagesModel = new RequestPagesModel();
@@ -234,55 +235,54 @@ export class QueryQueryComponent implements OnInit {
           break;
       }
     }
-    console.log("打开对话框")
-    console.log(openModal)
-    let add = this.modalService.show(openModal, { class: 'modal-lg' })
-    // let add = this.commonService.ShowModal({ class: 'modal-lg' },openModal)
-    add.content.SetSettingsColumns(this.configJson)
-    add.content.message = "修改查询"
-    if (defaultData != null) {
-      add.content.bean = defaultData
-      add.content.message = "添加查询"
 
-      if (readUrl != null) {
-        if (defaultData.ID != "") {
-          this.toPostService.Post(readUrl, { Key: defaultData.ID }).then(data => {
+    this.GetBean(defaultData, readUrl).then(x => {
+      if (x == null && !x.IsSuccess) {
+        console.log("获取取初始值失败")
+        return
+      }
+      console.log("获取取初始值")
+      console.log(x.Data)
+      let add = this.modalService.show(openModal, { class: 'modal-lg' })
+      add.content.SetSettingsColumns(this.configJson)
+      add.content.message = "修改"
+      if (defaultData != null) {
+        add.content.message = "添加"
+      }
+      add.content.bean = x.Data
+      add.content.OkHandler = (bean, saveKeys) => {
+        if (window.confirm('确定要保存吗？')) {
+          let postClass: RequestSaveModel = new RequestSaveModel();
+          postClass.Data = bean;
+          postClass.SaveKeys = saveKeys;
+          this.toPostService.Post(apiUrl, postClass).then((data: AppReturnDTO) => {
+            console.log(data)
             if (data.IsSuccess) {
-              add.content.bean = data.Data
+              this.source.refresh()
+              add.hide()
             }
             else {
               this.commonService.hint(data.Msg)
             }
-          })
+          });
+        } else {
+          add.hide()
         }
       }
-    }
-
-
-    add.content.OkHandler = (bean, saveKeys) => {
-      if (window.confirm('确定要保存吗？')) {
-        let postClass: RequestSaveModel = new RequestSaveModel();
-        postClass.Data = bean;
-        postClass.SaveKeys = saveKeys;
-        this.toPostService.Post(apiUrl, postClass).then((data: AppReturnDTO) => {
-          console.log(data)
-          if (data.IsSuccess) {
-            this.source.refresh()
-            add.hide()
-          }
-          else {
-            this.commonService.hint(data.Msg)
-          }
-        });
-      } else {
+      add.content.CancelHandler = (bean) => {
         add.hide()
       }
+    })
+
+  }
+  GetBean(defaultData = null, readUrl = null): Promise<any> {
+    if (readUrl != null) {
+      return this.toPostService.Post(readUrl, { Key: defaultData.ID })
     }
-    add.content.CancelHandler = (bean) => {
-      add.hide()
+    else {
+      return new Promise((resolve, rejeact) => { resolve({ "IsSuccess": true, "Data": defaultData }) });
     }
   }
-
   ReLoad() {
     this.source.refresh()
   }
