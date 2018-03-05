@@ -6,12 +6,6 @@ import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
     templateUrl: './confirm.html',
 })
 export class ModalConfirmPage {
-
-    constructor() { }
-
-    ngOnInit() {
-    }
-
     OkText = "确定"
     ChancelText = "取消"
     message: string;
@@ -24,13 +18,19 @@ export class ModalConfirmPage {
     _columns: any = {}
     saveKeys = []
 
-    confirm(): void {
+
+    constructor() { }
+
+    ngOnInit() {
+    }
+    /** 编辑  */
+    Edit(): void {
         if (this.OkHandler != null) {
             this.OkHandler(this.bean, this.saveKeys);
         }
     }
-    
-    decline(): void {
+    /** 取消 */
+    Delete(): void {
         if (this.CancelHandler != null) {
             this.CancelHandler(this.bean, this.saveKeys);
         }
@@ -53,6 +53,7 @@ export class ModalConfirmPage {
         for (const key in columnsJson) {
             this.inputs.push({
                 name: key,
+                title: columnsJson[key].title,
                 placeholder: columnsJson[key].title,
                 type: columnsJson[key].type,
                 inputWidth: columnsJson[key].inputWidth,

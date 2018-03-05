@@ -53,7 +53,7 @@ export class QueryQueryComponent implements OnInit {
     private toPostService: ToPostService,
     private commonService: CommonService,
     private modalService: BsModalService,
-    
+
     http: Http,
   ) {
     console.log(this.routerIonfo.snapshot)
@@ -65,11 +65,11 @@ export class QueryQueryComponent implements OnInit {
       if (window.location.href.indexOf("/pages/query/query/") > -1) {
         if (window.location.href != this.thisUrl) {
           this.thisUrl = window.location.href
-          this.LoadSetting=false;
+          this.LoadSetting = false;
           this.LoadData().then(x => {
             // this.settings = this.settings;
-            this.LoadSetting=true;
-            
+            this.LoadSetting = true;
+
             this.CheckUrl()
           })
         }
@@ -96,8 +96,12 @@ export class QueryQueryComponent implements OnInit {
         eval("t=" + this.queryEnt.HEARD_BTN)
         this.headBtnSet = t
         //读取行按钮
-        eval("t=" + this.queryEnt.ROWS_BTN)
-        this.rowBtnSet = t
+        try {
+          eval("t=" + this.queryEnt.ROWS_BTN)
+          this.rowBtnSet = t
+        } catch (error) {
+
+        }
         if (this.rowBtnSet == null) this.rowBtnSet = []
 
         let tempCol = ServerDataSource.ReMoveHideItem(this.configJson);
@@ -168,10 +172,10 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
-/**
- * 
- * @param event 添加事件
- */
+  /**
+   * 删除事件
+   * @param event 添加事件
+   */
   onDelete(event): void {
 
     if (this.rowBtnSet.length > 1) {
@@ -183,10 +187,15 @@ export class QueryQueryComponent implements OnInit {
 
   onSave(nowThis, event) {
     if (this.rowBtnSet.length > 0) {
-      this.Add(this.rowBtnSet[0].apiUrl,null, event.data)
+      this.Add(this.rowBtnSet[0].apiUrl, this.rowBtnSet[0].openModal, event.data, this.rowBtnSet[0].readUrl)
     }
   }
-
+  /**
+   * 删除
+   * @param apiUrl 
+   * @param Key 
+   * @param confirmTip 
+   */
   DeleteApi(apiUrl, Key, confirmTip) {
     if (window.confirm(confirmTip)) {
       this.commonService.showLoading();
@@ -202,20 +211,26 @@ export class QueryQueryComponent implements OnInit {
   }
 
 
-  Add(apiUrl,openModal: any = null, defaultData = null): void {
+  /**
+   * 
+   * @param apiUrl 保存API
+   * @param openModal 弹出对话框的组件
+   * @param defaultData 默认数据
+   * @param readUrl 读取默认数据的API
+   */
+  Add(apiUrl, openModal: any = null, defaultData = null, readUrl = null): void {
     console.log(this.smartTable)
     console.log(event)
-    if(openModal==null)
-    {
-      openModal=ModalConfirmPage
+    if (openModal == null) {
+      openModal = ModalConfirmPage
     }
-    else{
+    else {
       switch (openModal) {
         case "RoleEditComponent":
-          openModal=RoleEditComponent
+          openModal = RoleEditComponent
           break;
         default:
-          openModal=ModalConfirmPage
+          openModal = ModalConfirmPage
           break;
       }
     }
@@ -228,7 +243,22 @@ export class QueryQueryComponent implements OnInit {
     if (defaultData != null) {
       add.content.bean = defaultData
       add.content.message = "添加查询"
+
+      if (readUrl != null) {
+        if (defaultData.ID != "") {
+          this.toPostService.Post(readUrl, { Key: defaultData.ID }).then(data => {
+            if (data.IsSuccess) {
+              add.content.bean = data.Data
+            }
+            else {
+              this.commonService.hint(data.Msg)
+            }
+          })
+        }
+      }
     }
+
+
     add.content.OkHandler = (bean, saveKeys) => {
       if (window.confirm('确定要保存吗？')) {
         let postClass: RequestSaveModel = new RequestSaveModel();
