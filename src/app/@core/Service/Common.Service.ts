@@ -493,28 +493,46 @@ export class CommonService {
     activeModal.content.buttonName = [this.translate.instant("public.Okay")]
 
   }
-
-  JsonToTreeJson(inJson: Array<any>, valueField, textField, childrenField) {
+  /**
+   * JSON 转 treeview的绑定对象
+   * @param inJson J
+   * @param valueField 
+   * @param textField 
+   * @param childrenField 
+   * @param checkValueArr 
+   */
+  JsonToTreeJson(inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>) {
+    console.log("开始 JSON 转 treeview的绑定对象")
+    console.log(inJson)
+    console.log(valueField)
+    console.log(textField)
+    console.log(childrenField)
+    console.log(checkValueArr)
+    
     let reArr: Array<any> = []
     for (let index = inJson.length - 1; index >= 0; index--) {
       const element = inJson[index];
       if (element[childrenField] == null || element[childrenField] == "") {
-        reArr.push({ text: element[textField], value: element[valueField] })
-        inJson.splice(index,1)
+        reArr.push({ text: element[textField], value: element[valueField], checked: checkValueArr.indexOf(element[valueField]) > -1 })
+        inJson.splice(index, 1)
       }
     }
+    //添加4级子菜单
     for (let index = 0; index < 4; index++) {
       for (let index = inJson.length - 1; index >= 0; index--) {
         const element = inJson[index];
         if (element[childrenField] != null && element[childrenField] != "") {
-          reArr = this.JsonToTreeJsonAddChildren(reArr, element, textField, valueField, childrenField)
-          inJson.splice(index,1)
+          reArr = this.JsonToTreeJsonAddChildren(reArr, element, textField, valueField, childrenField, checkValueArr)
+          inJson.splice(index, 1)
         }
       }
     }
+
+    console.log("结束 JSON 转 treeview的绑定对象")
+    console.log(reArr)
     return reArr;
   }
-  JsonToTreeJsonAddChildren(inJson: Array<any>, addJson: any, textField: string, valueField: string, childrenField: string) {
+  JsonToTreeJsonAddChildren(inJson: Array<any>, addJson: any, textField: string, valueField: string, childrenField: string, checkValueArr: Array<any>) {
     if (inJson == null) {
       inJson = []
     }
@@ -525,11 +543,11 @@ export class CommonService {
       const element = inJson[index];
       if (element["value"] == addJson[childrenField]) {
         if (element["children"] == null) element["children"] = [];
-        inJson[index]["children"].push({ text: addJson[textField], value: addJson[valueField] })
+        inJson[index]["children"].push({ text: addJson[textField], value: addJson[valueField], checked: checkValueArr.indexOf(addJson[valueField]) > -1 })
       }
       else {
         if (element["children"] != null) {
-          inJson[index]["children"] = this.JsonToTreeJsonAddChildren(element["children"], addJson, textField, valueField, childrenField)
+          inJson[index]["children"] = this.JsonToTreeJsonAddChildren(element["children"], addJson, textField, valueField, childrenField, checkValueArr)
         }
       }
     }

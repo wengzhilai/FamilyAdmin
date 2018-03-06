@@ -60,6 +60,7 @@ export class QueryQueryComponent implements OnInit {
     this.CheckUrl();
   }
 
+  /** 用于检测URL地址是否改变，如已经变则刷新该页面 */
   CheckUrl() {
     setTimeout(() => {
       if (window.location.href.indexOf("/pages/query/query/") > -1) {
@@ -67,7 +68,6 @@ export class QueryQueryComponent implements OnInit {
           this.thisUrl = window.location.href
           this.LoadSetting = false;
           this.LoadData().then(x => {
-            // this.settings = this.settings;
             this.LoadSetting = true;
 
             this.CheckUrl()
@@ -220,21 +220,6 @@ export class QueryQueryComponent implements OnInit {
    * @param readUrl 读取默认数据的API
    */
   Add(apiUrl, openModal: any = null, defaultData = null, readUrl = null): void {
-    console.log(this.smartTable)
-    console.log(event)
-    if (openModal == null) {
-      openModal = ModalConfirmPage
-    }
-    else {
-      switch (openModal) {
-        case "RoleEditComponent":
-          openModal = RoleEditComponent
-          break;
-        default:
-          openModal = ModalConfirmPage
-          break;
-      }
-    }
 
     this.GetBean(defaultData, readUrl).then(x => {
       if (x == null && !x.IsSuccess) {
@@ -243,13 +228,13 @@ export class QueryQueryComponent implements OnInit {
       }
       console.log("获取取初始值")
       console.log(x.Data)
-      let add = this.modalService.show(openModal, { class: 'modal-lg' })
+      let add = this.modalService.show(this.GetOpenComponent(openModal), { class: 'modal-lg' })
+      add.content.bean = x.Data
       add.content.SetSettingsColumns(this.configJson)
       add.content.message = "修改"
       if (defaultData != null) {
         add.content.message = "添加"
       }
-      add.content.bean = x.Data
       add.content.OkHandler = (bean, saveKeys) => {
         if (window.confirm('确定要保存吗？')) {
           let postClass: RequestSaveModel = new RequestSaveModel();
@@ -275,6 +260,11 @@ export class QueryQueryComponent implements OnInit {
     })
 
   }
+  /**
+   * 获取初始值
+   * @param defaultData 行选择的值
+   * @param readUrl 加载的URL
+   */
   GetBean(defaultData = null, readUrl = null): Promise<any> {
     if (readUrl != null) {
       return this.toPostService.Post(readUrl, { Key: defaultData.ID })
@@ -283,6 +273,21 @@ export class QueryQueryComponent implements OnInit {
       return new Promise((resolve, rejeact) => { resolve({ "IsSuccess": true, "Data": defaultData }) });
     }
   }
+
+  GetOpenComponent(openModal) {
+    if (openModal == null) {
+      return ModalConfirmPage
+    }
+    else {
+      switch (openModal) {
+        case "RoleEditComponent":
+          return RoleEditComponent
+        default:
+          return ModalConfirmPage
+      }
+    }
+  }
+
   ReLoad() {
     this.source.refresh()
   }

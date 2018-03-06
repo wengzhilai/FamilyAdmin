@@ -17,30 +17,11 @@ export class RoleEditComponent {
   key: string = ""
 
   items: Array<TreeviewItem> = [];
+  ItemIsNew: boolean = false;
   config = TreeviewConfig.create({
     hasAllCheckBox: false,
     maxHeight: 100
   });
-
-  constructor(
-    private toPostService: ToPostService,
-    private commonService: CommonService,
-  ) {
-    this.toPostService.Post("module/list", { Key: this.key }).then(x => {
-      let allItem = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID");
-      allItem.forEach(element => {
-        this.items.push(new TreeviewItem(element))
-      });
-    })
-  }
-
-  ngOnInit() {
-    if (this.key != "") {
-      this.toPostService.Post("role/single", { Key: this.key }).then(x => {
-        console.log(x)
-      })
-    }
-  }
 
   OkText = "确定"
   ChancelText = "取消"
@@ -53,6 +34,19 @@ export class RoleEditComponent {
 
   _columns: any = {}
   saveKeys = []
+
+  constructor(
+    private toPostService: ToPostService,
+    private commonService: CommonService,
+  ) {
+
+  }
+
+  ngOnInit() {
+
+  }
+
+
 
   confirm(): void {
     if (this.OkHandler != null) {
@@ -96,9 +90,24 @@ export class RoleEditComponent {
     //传入的默认值
     console.log("传入的默认值")
     console.log(this.bean)
+
+    this.LoadModule();
   }
 
-  onSelectedChange(downlineItems: DownlineTreeviewItem[]) {
+  LoadModule() {
+    this.toPostService.Post("module/list", { Key: this.key }).then(x => {
+      let allItem = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID", this.bean.moduleIdStr);
+      allItem.forEach(element => {
+        this.items.push(new TreeviewItem(element))
+      });
+      this.ItemIsNew = true
+    })
+  }
+
+  onSelectedChange(downlineItems: DownlineTreeviewItem[], itemName: string) {
+    if (this.ItemIsNew) {
+      this.bean[itemName] = downlineItems
+    }
     console.log(downlineItems)
     console.log(this.bean)
   }
