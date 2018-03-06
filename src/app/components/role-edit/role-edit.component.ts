@@ -75,7 +75,7 @@ export class RoleEditComponent {
       })
 
       if (columnsJson[key].defaultValue != null) {
-        this.bean[key] = columnsJson[key].defaultValue
+        if (this.bean[key]==null) this.bean[key] = columnsJson[key].defaultValue
       }
 
       if (columnsJson[key].editable != false) {
