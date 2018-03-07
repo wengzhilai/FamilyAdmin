@@ -211,6 +211,13 @@ export class QueryQueryComponent implements OnInit {
     }
   }
 
+  Exec(apiUrl, Key, confirmTip) {
+    let allKeyList = []
+    this.selectedArr.forEach(element => {
+      allKeyList.push(element[Key])
+    });
+    this.DeleteApi(apiUrl, allKeyList.join(","), confirmTip)
+  }
 
   /**
    * 
@@ -223,7 +230,7 @@ export class QueryQueryComponent implements OnInit {
     this.commonService.showLoading();
     this.GetBean(defaultData, readUrl).then(x => {
       this.commonService.hideLoading();
-      
+
       if (x == null && !x.IsSuccess) {
         console.log("获取取初始值失败")
         return
@@ -231,11 +238,11 @@ export class QueryQueryComponent implements OnInit {
       console.log("获取取初始值")
       console.log(x.Data)
       let add = this.modalService.show(this.GetOpenComponent(openModal), { class: 'modal-lg' })
-      
+
       add.content.bean = x.Data
       //会设置初始值
       add.content.SetSettingsColumns(this.configJson)
-      
+
       add.content.message = "修改"
       if (defaultData != null) {
         add.content.message = "添加"
@@ -275,7 +282,7 @@ export class QueryQueryComponent implements OnInit {
       return this.toPostService.Post(readUrl, { Key: defaultData.ID })
     }
     else {
-      console.log(1)
+      if (defaultData == null) defaultData = {}
       return new Promise((resolve, rejeact) => { resolve({ "IsSuccess": true, "Data": defaultData }) });
     }
   }

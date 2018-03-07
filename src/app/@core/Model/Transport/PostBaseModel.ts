@@ -12,7 +12,7 @@ export class PostBaseModel {
     /**
      * 主键
      */
-    Key:string=""
+    Key:any
 
     Token:string=""
     

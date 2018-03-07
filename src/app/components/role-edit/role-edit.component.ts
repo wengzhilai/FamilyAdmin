@@ -74,9 +74,10 @@ export class RoleEditComponent {
         tooltip: columnsJson[key].tooltip,
       })
 
-      if (columnsJson[key].defaultValue != null) {
+
+      if (this.bean != null && columnsJson[key].defaultValue != null) {
         //没有配置值才设置默认值
-        if (this.bean[key]==null) this.bean[key] = columnsJson[key].defaultValue
+        if (this.bean[key] == null) this.bean[key] = columnsJson[key].defaultValue
       }
 
       if (columnsJson[key].editable != false) {
