@@ -75,6 +75,7 @@ export class RoleEditComponent {
       })
 
       if (columnsJson[key].defaultValue != null) {
+        //没有配置值才设置默认值
         if (this.bean[key]==null) this.bean[key] = columnsJson[key].defaultValue
       }
 
@@ -107,8 +108,10 @@ export class RoleEditComponent {
   onSelectedChange(downlineItems: DownlineTreeviewItem[], itemName: string) {
     if (this.ItemIsNew) {
       this.bean[itemName] = downlineItems
+
+      console.log(downlineItems)
+      console.log(this.bean)
     }
-    console.log(downlineItems)
-    console.log(this.bean)
+
   }
 }
