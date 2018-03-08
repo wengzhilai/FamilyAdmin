@@ -13,16 +13,6 @@ import {
   styleUrls: ['./role-edit.component.scss']
 })
 export class RoleEditComponent {
-
-  key: string = ""
-
-  items: Array<TreeviewItem> = [];
-  ItemIsNew: boolean = false;
-  config = TreeviewConfig.create({
-    hasAllCheckBox: false,
-    maxHeight: 100
-  });
-
   OkText = "确定"
   ChancelText = "取消"
   message: string;
@@ -34,6 +24,16 @@ export class RoleEditComponent {
 
   _columns: any = {}
   saveKeys = []
+  key: string = ""
+
+  items: Array<TreeviewItem> = [];
+  ItemIsNew: boolean = false;
+  config = TreeviewConfig.create({
+    hasAllCheckBox: false,
+    maxHeight: 100
+  });
+
+
 
   constructor(
     private toPostService: ToPostService,

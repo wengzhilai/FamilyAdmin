@@ -27,8 +27,7 @@
                 class="form-control"></textarea>
               <ngx-treeview *ngSwitchCase="'treeview'" id="input{{i}}" [config]="config" [items]="items" (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-treeview>
-              <!-- <input  *ngSwitchCase="'treeview'" id="input{{i}}"  [(ngModel)]="bean[item.name]"
-            type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}"> -->
+              <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
             </ng-container>
           </ng-template>
         </div>

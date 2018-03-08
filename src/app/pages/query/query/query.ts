@@ -227,10 +227,7 @@ export class QueryQueryComponent implements OnInit {
    * @param readUrl 读取默认数据的API
    */
   Add(apiUrl, openModal: any = null, defaultData = null, readUrl = null): void {
-    this.commonService.showLoading();
     this.GetBean(defaultData, readUrl).then(x => {
-      this.commonService.hideLoading();
-
       if (x == null && !x.IsSuccess) {
         console.log("获取取初始值失败")
         return

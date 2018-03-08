@@ -5,6 +5,8 @@
   </button>
 </div>
 <div class="modal-body">
+
+
   <div class="row">
     <ng-container *ngFor="let item of inputs | JsonFilter:'isTabs':false;let i = index">
       <div class="col-sm-{{item.inputWidth?item.inputWidth:6}}" *ngIf="item.editable==null || item.editable==true">
@@ -23,6 +25,7 @@
               </select>
               <textarea *ngSwitchCase="'textarea'" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3" placeholder="{{item.placeholder}}"
                 class="form-control"></textarea>
+
               <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
             </ng-container>
           </ng-template>
@@ -41,6 +44,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="Edit()">{{OkText}}</button>
-  <button type="button" class="btn btn-primary" (click)="Delete()">{{ChancelText}}</button>
+  <button type="button" class="btn btn-default" (click)="confirm()">{{OkText}}</button>
+  <button type="button" class="btn btn-primary" (click)="decline()">{{ChancelText}}</button>
 </div>
