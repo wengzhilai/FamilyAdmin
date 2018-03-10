@@ -15,7 +15,7 @@ import { fail } from 'assert';
 import { Config } from '../../../@core/Classes/Config';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
-import { ModalConfirmPage } from "../../../components/modals/confirm";
+import { EditComponent } from "../../../components/edit/edit.component";
 import { RoleEditComponent } from "../../../components/role-edit/role-edit.component";
 @Component({
   selector: 'query',
@@ -286,14 +286,14 @@ export class QueryQueryComponent implements OnInit {
 
   GetOpenComponent(openModal) {
     if (openModal == null) {
-      return ModalConfirmPage
+      return EditComponent
     }
     else {
       switch (openModal) {
         case "RoleEditComponent":
           return RoleEditComponent
         default:
-          return ModalConfirmPage
+          return EditComponent
       }
     }
   }

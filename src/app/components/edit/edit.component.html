@@ -25,8 +25,14 @@
               </select>
               <textarea *ngSwitchCase="'textarea'" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3" placeholder="{{item.placeholder}}"
                 class="form-control"></textarea>
-              <ngx-dropdown-treeview *ngSwitchCase="'dropdown-treeview'" [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)"
-                [items]="ValuesBean[item.name]" (selectedChange)="bean[item.name] = $event" class="form-control">
+              <ngx-treeview *ngSwitchCase="'treeview'" id="input{{i}}" [config]="config" [items]="items" (selectedChange)="onSelectedChange($event,item.name)">
+              </ngx-treeview>
+              <ngx-dropdown-treeview 
+              *ngSwitchCase="'dropdown-treeview'" 
+              [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
+              [items]="ValuesBean[item.name]" 
+              [buttonClass]="'btn-outline-primary'"  
+              (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-dropdown-treeview>
               <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
             </ng-container>

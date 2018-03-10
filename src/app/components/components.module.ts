@@ -6,6 +6,7 @@ import { ThemeModule } from '../@theme/theme.module';
 import { SmartTableFormatValuePage } from "./SmartTable/formatValue";
 import { TooltipModule } from 'ngx-bootstrap';
 import { RoleEditComponent } from "./role-edit/role-edit.component";
+import { EditComponent } from "./edit/edit.component";
 import { TreeviewModule } from 'ngx-treeview';
 
 @NgModule({
@@ -14,6 +15,7 @@ import { TreeviewModule } from 'ngx-treeview';
         SmartTableFormatValuePage,
         ModalLoadingPage,
         RoleEditComponent,
+        EditComponent,
     ],
     imports: [
         CommonModule,
@@ -27,6 +29,7 @@ import { TreeviewModule } from 'ngx-treeview';
         ModalLoadingPage,
         SmartTableFormatValuePage,
         RoleEditComponent,
+        EditComponent,
     ]
 })
 export class ComponentsModule { }

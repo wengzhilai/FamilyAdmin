@@ -8,11 +8,10 @@ import {
 
 
 @Component({
-  selector: 'role-edit',
-  templateUrl: './role-edit.component.html',
-  styleUrls: ['./role-edit.component.scss']
+  selector: 'edit',
+  templateUrl: './edit.component.html'
 })
-export class RoleEditComponent {
+export class EditComponent {
   OkText = "确定"
   ChancelText = "取消"
   message: string;
@@ -27,12 +26,17 @@ export class RoleEditComponent {
   key: string = ""
 
   items: Array<TreeviewItem> = [];
-  ItemIsNew: boolean = false;
   config = TreeviewConfig.create({
     hasAllCheckBox: false,
     maxHeight: 100
   });
 
+  //所有用于绑定的值
+  ValuesBean = {}
+  ddrtreeConfig = TreeviewConfig.create({
+    hasAllCheckBox: false,
+    maxHeight: 100
+  });
 
 
   constructor(
@@ -43,7 +47,6 @@ export class RoleEditComponent {
   }
 
   ngOnInit() {
-
   }
 
 
@@ -94,24 +97,38 @@ export class RoleEditComponent {
     console.log("传入的默认值")
     console.log(this.bean)
 
-    this.LoadModule();
   }
 
-  LoadModule() {
-    this.toPostService.Post("module/list", { Key: this.key }).then(x => {
-      let allItem = this.commonService.JsonToTreeJson(x.Data, "ID", "NAME", "PARENT_ID", this.bean.moduleIdStr);
-      allItem.forEach(element => {
-        this.items.push(new TreeviewItem(element))
-      });
-      this.ItemIsNew = true
-    })
-  }
-
+  ItemIsNew = {};
   onSelectedChange(downlineItems: DownlineTreeviewItem[], itemName: string) {
-    if (this.ItemIsNew) {
+    if (this.ItemIsNew[itemName]) {
       this.bean[itemName] = downlineItems
-      console.log(downlineItems)
-      console.log(this.bean)
     }
+  }
+
+
+  isLoad = {}
+  GetTreeviewConfig(fig, dataFig: any, name) {
+
+    /** 如果已经执行过就执行 */
+    if (!this.isLoad[name]) {
+      this.isLoad[name] = true
+      const items: TreeviewItem[] = [];
+      this.ValuesBean[name] = items;
+      this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
+        if (data.IsSuccess) {
+          let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
+          allItem.forEach(element => {
+            console.log(element)
+            items.push(new TreeviewItem(element))
+          });
+          this.ValuesBean[name] = items;
+          this.ItemIsNew[name] = true
+          console.log(this.ValuesBean[name]);
+        }
+      })
+    }
+
+    return TreeviewConfig.create(fig);
   }
 }

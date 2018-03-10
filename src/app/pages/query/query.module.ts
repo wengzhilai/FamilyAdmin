@@ -13,6 +13,7 @@ import { QueryQueryComponent } from './query/query';
 import { QueryComponent } from './query.component';
 import { AccordionModule } from 'ngx-bootstrap';
 import { RoleModule } from "../role/role.module";
+import { EditComponent } from "../../components/edit/edit.component";
 
 
 @NgModule({
@@ -30,9 +31,11 @@ import { RoleModule } from "../role/role.module";
     QueryListPage,
     QueryQueryComponent,
     QueryComponent,
+    
   ],
   entryComponents: [
     SmartTableFormatValuePage,
+    EditComponent,
   ],
   exports: [
   ],
