@@ -124,7 +124,6 @@ export class AuthLoginPage {
                 return false;
             }
             if (res.IsSuccess) {
-                //保存用户名，仅仅用于在推送消息的时候，检测该消息是否对该用户有效，tabs.ts
                 AppGlobal.CooksSet("loginName", this.userForm.value.loginName)
                 AppGlobal.SetToken(res.Code);
                 AppGlobal.SetProperty(res.Data)

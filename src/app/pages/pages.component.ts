@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
+import { AppGlobal } from "../@core/Classes/AppGlobal";
 
 @Component({
   selector: 'ngx-pages',
@@ -13,4 +14,8 @@ import { MENU_ITEMS } from './pages-menu';
 })
 export class PagesComponent {
   menu = MENU_ITEMS;
+  constructor() {
+    const user= AppGlobal.GetProperty()
+    console.log(user)
+  }
 }

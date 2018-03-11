@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
-import { ToPostService, CommonService } from '../../@core/Service';
+import { ToPostService, CommonService,DefaultTreeviewI18n } from '../../@core/Service';
 import {
   TreeviewI18n, TreeviewItem, TreeviewConfig, TreeviewHelper, TreeviewComponent,
   TreeviewEventParser, OrderDownlineTreeviewEventParser, DownlineTreeviewItem
@@ -9,7 +9,10 @@ import {
 
 @Component({
   selector: 'edit',
-  templateUrl: './edit.component.html'
+  templateUrl: './edit.component.html',
+  providers: [
+    { provide: TreeviewI18n, useClass: DefaultTreeviewI18n }
+]
 })
 export class EditComponent {
   OkText = "确定"
@@ -113,11 +116,10 @@ export class EditComponent {
     /** 如果已经执行过就执行 */
     if (!this.isLoad[name]) {
       this.isLoad[name] = true
-      const items: TreeviewItem[] = [];
-      this.ValuesBean[name] = items;
       this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
         if (data.IsSuccess) {
           let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
+          const items: TreeviewItem[] = [];
           allItem.forEach(element => {
             console.log(element)
             items.push(new TreeviewItem(element))
