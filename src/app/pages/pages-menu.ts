@@ -1,58 +1,58 @@
 import { NbMenuItem } from '@nebular/theme';
 
 export const MENU_ITEMS: NbMenuItem[] = [
-  {
-    title: '系统管理',
-    icon: 'nb-gear',
-    children: [
-      {
-        title: '角色管理',
-        icon: 'ion-person-stalker',
-        link: '/pages/role/list',
-      },
-      {
-        title: '用户管理',
-        icon: 'ion-person',
-        link: '/pages/user/list',
-      },
-      {
-        title: '模块管理',
-        icon: 'ion-android-archive',
-        link: '/pages/module/list',
-      },
-      {
-        title: '查询管理',
-        icon: 'ion-android-archive',
-        link: '/pages/query/list',
-      }
-    ]
-  },
-  {
-    title: '测试查询',
-    icon: 'nb-gear',
-    children: [
-      {
-        title: '模块管理',
-        icon: 'ion-person-stalker',
-        link: '/pages/query/query/module'
-      },
-      {
-        title: '查询管理',
-        icon: 'ion-person-stalker',
-        link: '/pages/query/query/query'
-      },
-      {
-        title: '用户管理',
-        icon: 'ion-person-stalker',
-        link: '/pages/query/query/user'
-      },
-      {
-        title: '角色管理',
-        icon: 'ion-person-stalker',
-        link: '/pages/query/query/role'
-      }
-    ]
-  },
+  // {
+  //   title: '系统管理',
+  //   icon: 'nb-gear',
+  //   children: [
+  //     {
+  //       title: '角色管理',
+  //       icon: 'ion-person-stalker',
+  //       link: '/pages/role/list',
+  //     },
+  //     {
+  //       title: '用户管理',
+  //       icon: 'ion-person',
+  //       link: '/pages/user/list',
+  //     },
+  //     {
+  //       title: '模块管理',
+  //       icon: 'ion-android-archive',
+  //       link: '/pages/module/list',
+  //     },
+  //     {
+  //       title: '查询管理',
+  //       icon: 'ion-android-archive',
+  //       link: '/pages/query/list',
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: '测试查询',
+  //   icon: 'nb-gear',
+  //   children: [
+  //     {
+  //       title: '模块管理',
+  //       icon: 'ion-person-stalker',
+  //       link: '/pages/query/query/module'
+  //     },
+  //     {
+  //       title: '查询管理',
+  //       icon: 'ion-person-stalker',
+  //       link: '/pages/query/query/query'
+  //     },
+  //     {
+  //       title: '用户管理',
+  //       icon: 'ion-person-stalker',
+  //       link: '/pages/query/query/user'
+  //     },
+  //     {
+  //       title: '角色管理',
+  //       icon: 'ion-person-stalker',
+  //       link: '/pages/query/query/role'
+  //     }
+  //   ]
+  // },
   {
     title: 'Dashboard',
     icon: 'nb-home',
