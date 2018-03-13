@@ -175,17 +175,16 @@ export class AuthLoginPage {
                 }
             }
         ]
+        let inputs = [
+            {
+                name: 'apiUrl',
+                value: Cif.api,
+                placeholder: 'API连接地址'
+            }
+        ]
 
 
-        this.commonService.Confirm("配置接口", "配置接口", buttons,
-            [
-                {
-                    name: 'apiUrl',
-                    value: Cif.api,
-                    placeholder: 'API连接地址'
-                }
-            ]
-        )
+        this.commonService.Confirm("配置接口", [], buttons, inputs)
     }
     ChangeLoginName() {
         console.log(this.userForm.value.loginName)

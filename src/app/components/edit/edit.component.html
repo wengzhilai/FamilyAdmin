@@ -28,12 +28,16 @@
               <ngx-treeview *ngSwitchCase="'treeview'" id="input{{i}}" [config]="config" [items]="items" (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-treeview>
               <ngx-dropdown-treeview 
-              *ngSwitchCase="'dropdown-treeview'" 
-              [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
-              [items]="ValuesBean[item.name]" 
-              [buttonClass]="'btn-outline-primary'"  
-              (selectedChange)="onSelectedChange($event,item.name)">
+                *ngSwitchCase="'dropdown-treeview'" 
+                [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
+                [items]="ValuesBean[item.name]" 
+                [buttonClass]="'btn-outline-primary'"  
+                (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-dropdown-treeview>
+              <ngx-dropdown-treeview-select
+                *ngSwitchCase="'dropdown-treeview-select'" 
+                [items]="ValuesBean[item.name]" [(value)]="bean[item.name]" >
+              </ngx-dropdown-treeview-select>
               <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
             </ng-container>
           </ng-template>
@@ -52,6 +56,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" (click)="confirm()">{{OkText}}</button>
+  <button type="button" class="btn btn-hero-success" (click)="confirm()">{{OkText}}</button>
   <button type="button" class="btn btn-primary" (click)="decline()">{{ChancelText}}</button>
 </div>

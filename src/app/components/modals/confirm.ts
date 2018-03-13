@@ -12,8 +12,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
       </button>
     </div>
     <div class="modal-body">
-      <ul *ngIf="list.length">
-        <li *ngFor="let item of list">{{item}}</li>
+      <ul *ngIf="messageList.length">
+        <li *ngFor="let item of messageList">{{item}}</li>
       </ul>
       <ng-container *ngFor="let item of inputs;let i = index">
         <div class="col-sm-12" *ngIf="item.editable==null || item.editable==true">
@@ -37,13 +37,13 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
       </ng-container>
     </div>
     <div class="modal-footer">
-      <button type="button" *ngFor="let item of buttons" class="btn btn-default" (click)="ButtonClick(item.click)">{{item.name}}</button>
+      <button type="button" *ngFor="let item of buttons" class="btn btn-hero-success" (click)="ButtonClick(item.click)">{{item.name}}</button>
     </div>
   `
 })
 export class ModalConfirmPage {
   title: string;
-  list: any[] = [];
+  messageList: any[] = [];
   buttons = []
   inputs = []
   bean = {}

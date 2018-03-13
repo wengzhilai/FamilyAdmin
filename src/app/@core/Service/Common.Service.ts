@@ -447,10 +447,10 @@ export class CommonService {
 
 
 
-  Confirm(title, message, buttons=null, inputs = []) {
+  Confirm(title, messageList:Array<any>, buttons = null, inputs = []) {
 
-    if(buttons==null){
-      buttons=[
+    if (buttons == null) {
+      buttons = [
         {
           name: "确定",
           click: (e): Promise<any> => {
@@ -471,7 +471,8 @@ export class CommonService {
     }
 
     const initialState = {
-      "message": message,
+      "title": title,
+      "messageList": messageList,
       "inputs": inputs,
       "buttons": buttons
     };
