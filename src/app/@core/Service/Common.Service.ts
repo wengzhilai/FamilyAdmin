@@ -12,6 +12,7 @@ import { ModalLoadingPage } from "../../components/modals/loading";
 
 import { ModalConfirmPage } from "../../components/modals/confirm";
 import { ToasterService, ToasterConfig, Toast, BodyOutputType } from 'angular2-toaster';
+import { promise } from 'selenium-webdriver';
 
 
 // declare var wx;
@@ -276,9 +277,7 @@ export class CommonService {
     }
     console.log(msg)
     const initialState = {
-      list: [
-        msg.replace(/\\r\\n/g, "<br />")
-      ],
+      list: [msg.replace(/\\r\\n/g, "<br />")],
       title: title.replace(/\r/g, "<br />"),
       closeBtnName: [this.translate.instant("public.Okay")]
     };
@@ -287,11 +286,6 @@ export class CommonService {
 
     let bsModalRef = this.modalService.show(ModalConfirmPage, { initialState });
 
-
-
-    // activeModal.content.modalHeader = title.replace(/\r/g, "<br />");
-    // activeModal.content.modalContent = msg.replace(/\\r\\n/g, "<br />")
-    // activeModal.content.buttonName = [this.translate.instant("public.Okay")]
   }
 
 
@@ -453,27 +447,57 @@ export class CommonService {
 
 
 
-  Confirm(title, message, OkHandler, CancelHandler, OkText = "确定", ChancelText = "取消", inputs = []) {
+  Confirm(title, message, buttons=null, inputs = []) {
 
-    let modalRef = this.modalService.show(ModalConfirmPage, { class: 'modal-sm' });
-    modalRef.content.message = message
-    modalRef.content.OkText = OkText
-    modalRef.content.ChancelText = ChancelText
-    modalRef.content.inputs = inputs
-    if (inputs.length > 0) {
-      inputs.forEach(element => {
-        modalRef.content.bean[element.name] = element.value
-      });
-    }
-    modalRef.content.OkHandler = (x) => {
-      modalRef.hide()
-      OkHandler(x)
+    if(buttons==null){
+      buttons=[
+        {
+          name: "确定",
+          click: (e): Promise<any> => {
+            return new Promise((resolver, reject) => {
+              resolver("OkText")
+            })
+          }
+        },
+        {
+          name: "取消",
+          click: (e): Promise<any> => {
+            return new Promise((resolver, reject) => {
+              resolver("ChancelText")
+            })
+          }
+        }
+      ]
     }
 
-    modalRef.content.CancelHandler = (x) => {
-      modalRef.hide()
-      CancelHandler(x)
-    }
+    const initialState = {
+      "message": message,
+      "inputs": inputs,
+      "buttons": buttons
+    };
+
+    this.modalService.config.ignoreBackdropClick = true;
+    console.log(initialState)
+
+    let modalRef = this.modalService.show(ModalConfirmPage, { initialState, "class": 'modal-sm', });
+    // modalRef.content.message = message
+    // modalRef.content.OkText = OkText
+    // modalRef.content.ChancelText = ChancelText
+    // modalRef.content.inputs = inputs
+    // if (inputs.length > 0) {
+    //   inputs.forEach(element => {
+    //     modalRef.content.bean[element.name] = element.value
+    //   });
+    // }
+    // modalRef.content.OkHandler = (x) => {
+    //   modalRef.hide()
+    //   OkHandler(x)
+    // }
+
+    // modalRef.content.CancelHandler = (x) => {
+    //   modalRef.hide()
+    //   CancelHandler(x)
+    // }
   }
   /**
    * 

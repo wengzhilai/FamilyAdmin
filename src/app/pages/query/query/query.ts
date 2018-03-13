@@ -26,7 +26,9 @@ export class QueryQueryComponent implements OnInit {
   @ViewChild('smartTable') smartTable: ElementRef;
 
   source: ServerDataSource;
-  queryEnt: any = {};
+  queryEnt: any = {
+    REMARK:"　"
+  };
   /**
    * 表头按钮
    */

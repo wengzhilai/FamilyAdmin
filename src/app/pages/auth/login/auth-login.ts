@@ -38,7 +38,7 @@ export class AuthLoginPage {
         private translate: TranslateService,
         private router: Router,
     ) {
-
+        // this.commonService.hint("dddd")
         let userAndPwdListStr = AppGlobal.CooksGet("userAndPwdList")
 
         if (userAndPwdListStr != null && userAndPwdListStr != "") {
@@ -85,8 +85,6 @@ export class AuthLoginPage {
 
     }
     login() {
-
-
         if (this.userForm.invalid) {
             let formErrors = this.commonService.FormValidMsg(this.userForm, this.validationMessages);
             console.log(formErrors);
@@ -111,10 +109,8 @@ export class AuthLoginPage {
             }
         }
         this.userAndPwdList.push(now)
-
         AppGlobal.CooksSet("userAndPwdList", JSON.stringify(this.userAndPwdList))
         AppGlobal.CooksSet("rememberPwd", this.rememberPwd);
-
 
         this.commonService.showLoading()
         this.toPostService.Post("auth/UserLogin", this.user).then((res: any) => {
@@ -152,18 +148,36 @@ export class AuthLoginPage {
             this.isOpen = true;
             return;
         }
-        this.commonService.Confirm("配置接口", "配置接口", (x) => {
-            Cif.api = Cif._api
-            Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
-            console.log("imgUrl:" + Cif.imgUrl);
-            console.log("api:" + Cif.api);
-        }, (data) => {
-            AppGlobal.CooksSet('apiUrl', data.apiUrl);
-            Cif.api = data.apiUrl
-            Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
-            console.log("imgUrl:" + Cif.imgUrl);
-            console.log("api:" + Cif.api);
-        }, "初始值", "确认",
+        let buttons = [
+            {
+                name: "初始值",
+                click: (data): Promise<any> => {
+                    return new Promise((resolver, reject) => {
+                        Cif.api = Cif._api
+                        Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+                        console.log("imgUrl:" + Cif.imgUrl);
+                        console.log("api:" + Cif.api);
+                        resolver("初始值")
+                    })
+                }
+            },
+            {
+                name: "确认",
+                click: (data): Promise<any> => {
+                    return new Promise((resolver, reject) => {
+                        AppGlobal.CooksSet('apiUrl', data.apiUrl);
+                        Cif.api = data.apiUrl
+                        Cif.imgUrl = Cif.api.toLowerCase().replace("/api", "")
+                        console.log("imgUrl:" + Cif.imgUrl);
+                        console.log("api:" + Cif.api);
+                        resolver("确认")
+                    })
+                }
+            }
+        ]
+
+
+        this.commonService.Confirm("配置接口", "配置接口", buttons,
             [
                 {
                     name: 'apiUrl',
@@ -172,5 +186,14 @@ export class AuthLoginPage {
                 }
             ]
         )
+    }
+    ChangeLoginName() {
+        console.log(this.userForm.value.loginName)
+        this.userForm.get('password').setValue("");
+        this.userAndPwdList.forEach(element => {
+            if (element.loginName == this.userForm.value.loginName) {
+                this.userForm.get('password').setValue(element.password);
+            }
+        });
     }
 }

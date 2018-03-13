@@ -1,172 +1,68 @@
-import { Component } from '@angular/core';
-import { Config } from "../../@core/Classes/Config";
-import { AppGlobal } from "../../@core/Classes/AppGlobal";
-import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-
-import {
-  TreeviewI18n, TreeviewItem, TreeviewConfig, TreeviewHelper, TreeviewComponent,
-  TreeviewEventParser, OrderDownlineTreeviewEventParser, DownlineTreeviewItem
-} from 'ngx-treeview';
+import { Component, OnInit } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
   selector: 'ngx-confirmModal',
-  templateUrl: './confirm.html',
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{title}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ul *ngIf="list.length">
+        <li *ngFor="let item of list">{{item}}</li>
+      </ul>
+      <ng-container *ngFor="let item of inputs;let i = index">
+        <div class="col-sm-12" *ngIf="item.editable==null || item.editable==true">
+            <input *ngIf="item.editor==null || item.editor.type=='text';else elseBlock" id="input{{i}}" [(ngModel)]="bean[item.name]"
+              type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
+            <ng-template #elseBlock>
+              <ng-container [ngSwitch]="item.editor.type">
+                <select *ngSwitchCase="'list'" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
+                  <option *ngFor="let opt of item.editor.config.list" value="{{opt.value}}">{{opt.title}}</option>
+                </select>
+                <select *ngSwitchCase="'completer'" id="input{{i}}" [(ngModel)]="bean[item.name]" class="form-control">
+                  <option *ngFor="let opt of item.editor.config.completer.data" value="{{opt.value}}">{{opt.title}}</option>
+                </select>
+                <textarea *ngSwitchCase="'textarea'" id="input{{i}}" [(ngModel)]="bean[item.name]" rows="3" placeholder="{{item.placeholder}}"
+                  class="form-control"></textarea>
+                
+                <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
+              </ng-container>
+            </ng-template>
+        </div>
+      </ng-container>
+    </div>
+    <div class="modal-footer">
+      <button type="button" *ngFor="let item of buttons" class="btn btn-default" (click)="ButtonClick(item.click)">{{item.name}}</button>
+    </div>
+  `
 })
 export class ModalConfirmPage {
-  OkText = "确定"
-  ChancelText = "取消"
-  message: string;
-  OkHandler: any;
-  CancelHandler: any
+  title: string;
+  list: any[] = [];
+  buttons = []
   inputs = []
-  inputsIsTabs = []
-  bean: any = {}
-
-  _columns: any = {}
-  saveKeys = []
-  key: string = ""
-  //所有用于绑定的值
-  ValuesBean = {}
-  ItemIsNew: boolean = false;
-
-  ddrtreeConfig = TreeviewConfig.create({
-    hasAllCheckBox: false,
-    maxHeight: 100
-  });
-  constructor(
-    private http: Http,
-  ) {
-
-  }
+  bean = {}
+  constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit() {
-    // this.Post("query/query", {
-    //   "Key": "query",
-    //   "PageIndex": 1,
-    //   "PageSize": 10
-    // }).then(data => {
-    //   if (data.IsSuccess) {
-    //     this.ValuesBean["roleIdList"]=[]
-        
-    //     data.Data.forEach(element => {
-    //       console.log(element)
-    //       this.ValuesBean["roleIdList"].push(new TreeviewItem(element))
-    //     });
-    //     console.log(this.ValuesBean["roleIdList"]);
-    //   }
-    // })
-  }
-
-
-
-  confirm(): void {
-    if (this.OkHandler != null) {
-      this.OkHandler(this.bean, this.saveKeys);
-    }
-  }
-  decline(): void {
-    if (this.CancelHandler != null) {
-      this.CancelHandler(this.bean, this.saveKeys);
-    }
-  }
-
-
-  SetSettingsColumns(columnsJson) {
-    this.inputs = []
-    for (const key in columnsJson) {
-      this.inputs.push({
-        name: key,
-        title: columnsJson[key].title,
-        placeholder: columnsJson[key].title,
-        type: columnsJson[key].type,
-        inputWidth: columnsJson[key].inputWidth,
-        editable: columnsJson[key].editable,
-        editor: columnsJson[key].editor,
-        isTabs: columnsJson[key].isTabs ? true : false, //是否用tabs显示
-        tooltip: columnsJson[key].tooltip,
-      })
-
-
-      if (this.bean != null && columnsJson[key].defaultValue != null) {
-        //没有配置值才设置默认值
-        if (this.bean[key] == null) this.bean[key] = columnsJson[key].defaultValue
-      }
-
-      if (columnsJson[key].editable != false) {
-        this.saveKeys.push(key)
+    for (const key in this.inputs) {
+      if (this.inputs.hasOwnProperty(key)) {
+        const element = this.inputs[key];
+        if (element.hasOwnProperty("value") && element.hasOwnProperty("name")) {
+          this.bean[element["name"]] = element["value"]
+        }
       }
     }
-
-    this.inputsIsTabs = new JsonFilterPipe().transform(this.inputs, "isTabs", true);
-    //传入的配置
-    console.log("传入的配置")
-    console.log(this.inputs)
-    //传入的默认值
-    console.log("传入的默认值")
-    console.log(this.bean)
-
   }
-  GetTreeviewConfig(fig, dataFig: any, name) {
-    console.log(fig)
-    console.log(dataFig)
-    console.log(name)
-    this.ValuesBean[name] = []
-    this.Post(dataFig.api, dataFig.config).then(data => {
-      if (data.IsSuccess) {
-        data.Data.forEach(element => {
-          this.ValuesBean[name].push(new TreeviewItem(element))
-        });
-        console.log(this.ValuesBean[name]);
-      }
+  ButtonClick(even) {
+    even(this.bean).then(x => {
+      console.log(x)
+      this.bsModalRef.hide();
     })
-    return TreeviewConfig.create({
-      "hasAllCheckBox": true,
-      "hasFilter": true,
-      "hasCollapseExpand": false,
-      "maxHeight": 500
-    });
   }
-
-
-  Post(apiName, postBean: any, callback = null) {
-    console.group("开始请求[" + apiName + "]参数：");
-    console.time("Post时间");
-
-    var headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    if (AppGlobal.GetToken() != null) {
-      headers.append('Authorization', 'Bearer ' + AppGlobal.GetToken());
-    }
-    // console.log(headers)
-    let options = new RequestOptions({ headers: headers });
-
-    return this.http
-      .post(Config.api + apiName, postBean, options)
-      .toPromise()
-      .then((res: any) => {
-        console.log("返回结果：");
-        let response: any = res.json();
-        if (response.IsSuccess) {
-          if (callback) {
-            callback(response);
-          }
-        }
-        else {
-        }
-        console.timeEnd("Post时间");
-        console.groupEnd();
-        return response;
-      }, (error) => {
-        console.error('请求失败:');
-        console.timeEnd("Post时间");
-        console.groupEnd();
-
-        let errorMsg: any = {};
-        errorMsg.IsSuccess = false;
-        errorMsg.Msg = "连接网络失败";
-        return errorMsg
-      })
-  }
-
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { JsonFilterPipe } from "../../@theme/pipes/JsonFilter";
-import { ToPostService, CommonService,DefaultTreeviewI18n } from '../../@core/Service';
+import { ToPostService, CommonService, DefaultTreeviewI18n } from '../../@core/Service';
 import {
   TreeviewI18n, TreeviewItem, TreeviewConfig, TreeviewHelper, TreeviewComponent,
   TreeviewEventParser, OrderDownlineTreeviewEventParser, DownlineTreeviewItem
@@ -12,7 +12,7 @@ import {
   templateUrl: './edit.component.html',
   providers: [
     { provide: TreeviewI18n, useClass: DefaultTreeviewI18n }
-]
+  ]
 })
 export class EditComponent {
   OkText = "确定"
