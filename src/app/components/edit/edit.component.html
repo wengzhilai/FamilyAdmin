@@ -28,12 +28,17 @@
               <ngx-treeview *ngSwitchCase="'treeview'" id="input{{i}}" [config]="config" [items]="items" (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-treeview>
               <ngx-dropdown-treeview 
-              *ngSwitchCase="'dropdown-treeview'" 
-              [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
-              [items]="ValuesBean[item.name]" 
-              [buttonClass]="'btn-outline-primary'"  
-              (selectedChange)="onSelectedChange($event,item.name)">
+                *ngSwitchCase="'dropdown-treeview'" 
+                [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
+                [items]="ValuesBean[item.name]" 
+                (selectedChange)="onSelectedChange($event,item.name)">
               </ngx-dropdown-treeview>
+              <ngx-dropdown-treeview-select 
+                *ngSwitchCase="'dropdown-treeview-select'" 
+                [config]="GetTreeviewConfig(item.editor.config,item.editor.dataFig,item.name)" 
+                [items]="ValuesBean[item.name]" 
+                (selectedChange)="onSelectedChange($event,item.name)">
+              </ngx-dropdown-treeview-select>
               <input *ngSwitchDefault id="input{{i}}" [(ngModel)]="bean[item.name]" type="{{item.type}}" class="form-control" placeholder="{{item.placeholder}}">
             </ng-container>
           </ng-template>

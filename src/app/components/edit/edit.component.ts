@@ -105,7 +105,9 @@ export class EditComponent {
   ItemIsNew = {};
   onSelectedChange(downlineItems: DownlineTreeviewItem[], itemName: string) {
     if (this.ItemIsNew[itemName]) {
+      console.log(this.bean[itemName])
       this.bean[itemName] = downlineItems
+      console.log(this.bean[itemName])
     }
   }
 
@@ -119,6 +121,7 @@ export class EditComponent {
       this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
         if (data.IsSuccess) {
           let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
+          
           const items: TreeviewItem[] = [];
           allItem.forEach(element => {
             console.log(element)

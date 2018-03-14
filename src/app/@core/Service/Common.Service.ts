@@ -525,10 +525,11 @@ export class CommonService {
    * @param childrenField 
    * @param checkValueArr 
    */
-  JsonToTreeJson(inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>) {
+  JsonToTreeJson(_inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>) {
     if (checkValueArr == null) checkValueArr = []
+    let inJson=JSON.parse(JSON.stringify(_inJson))
     console.log("开始 JSON 转 treeview的绑定对象")
-    console.log(inJson)
+    console.log(_inJson)
     console.log(valueField)
     console.log(textField)
     console.log(childrenField)

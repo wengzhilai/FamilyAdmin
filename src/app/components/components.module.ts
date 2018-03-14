@@ -8,6 +8,7 @@ import { TooltipModule } from 'ngx-bootstrap';
 import { RoleEditComponent } from "./role-edit/role-edit.component";
 import { EditComponent } from "./edit/edit.component";
 import { TreeviewModule } from 'ngx-treeview';
+import { TreeviewSelectComponent } from "./TreeviewSelect/treeview-select.component";
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { TreeviewModule } from 'ngx-treeview';
         ModalLoadingPage,
         RoleEditComponent,
         EditComponent,
+        TreeviewSelectComponent,
     ],
     imports: [
         CommonModule,
@@ -30,6 +32,7 @@ import { TreeviewModule } from 'ngx-treeview';
         SmartTableFormatValuePage,
         RoleEditComponent,
         EditComponent,
+        TreeviewSelectComponent,
     ]
 })
 export class ComponentsModule { }
