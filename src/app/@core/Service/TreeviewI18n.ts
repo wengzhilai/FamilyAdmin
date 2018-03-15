@@ -4,43 +4,28 @@ import { TreeviewItem, TreeviewSelection, TreeviewI18n } from 'ngx-treeview';
 @Injectable()
 export class DefaultTreeviewI18n extends TreeviewI18n {
     language="ch"
-    private internalSelectedItem: TreeviewItem;
-
-    set selectedItem(value: TreeviewItem) {
-        if (value && value.children === undefined) {
-            this.internalSelectedItem = value;
-        }
-    }
-
-    get selectedItem(): TreeviewItem {
-        return this.internalSelectedItem;
-    }
-
-    getText(selection: TreeviewSelection): string {
-        return this.internalSelectedItem ? this.internalSelectedItem.text : 'All';
-    }
 
     constructor(
     ) {
         super();
     }
 
-    // getText(selection: TreeviewSelection): string {
-    //     if (selection.uncheckedItems.length === 0) {
-    //         return this.language === 'en' ? 'All' : '所有';
-    //     }
+    getText(selection: TreeviewSelection): string {
+        if (selection.uncheckedItems.length === 0) {
+            return this.language === 'en' ? 'All' : '所有';
+        }
 
-    //     switch (selection.checkedItems.length) {
-    //         case 0:
-    //             return this.language === 'en' ? 'Select options' : '选择项';
-    //         case 1:
-    //             return selection.checkedItems[0].text;
-    //         default:
-    //             return this.language === 'en'
-    //                 ? `${selection.checkedItems.length} options selected`
-    //                 : `${selection.checkedItems.length} 项选择`;
-    //     }
-    // }
+        switch (selection.checkedItems.length) {
+            case 0:
+                return this.language === 'en' ? 'Select options' : '选择项';
+            case 1:
+                return selection.checkedItems[0].text;
+            default:
+                return this.language === 'en'
+                    ? `${selection.checkedItems.length} options selected`
+                    : `${selection.checkedItems.length} 项选择`;
+        }
+    }
 
     getAllCheckboxText(): string {
         if (this.language === 'en') {

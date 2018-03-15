@@ -29,6 +29,8 @@ export class EditComponent {
   key: string = ""
 
   items: Array<TreeviewItem> = [];
+
+
   config = TreeviewConfig.create({
     hasAllCheckBox: false,
     maxHeight: 100
@@ -114,14 +116,13 @@ export class EditComponent {
 
   isLoad = {}
   GetTreeviewConfig(fig, dataFig: any, name) {
-
     /** 如果已经执行过就执行 */
     if (!this.isLoad[name]) {
       this.isLoad[name] = true
       this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
         if (data.IsSuccess) {
           let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
-          
+
           const items: TreeviewItem[] = [];
           allItem.forEach(element => {
             console.log(element)
@@ -133,7 +134,24 @@ export class EditComponent {
         }
       })
     }
+    return TreeviewConfig.create(fig);
+  }
+  LoadSelectData(fig, dataFig: any, name) {
+    console.log(234)
+    /** 如果已经执行过就执行 */
+    if (!this.isLoad[name]) {
+      this.isLoad[name] = true
+      this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
+        if (data.IsSuccess) {
+          let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
+          const items = this.commonService.TreeJsonToArrJson(allItem, "value", "text", "children", [""])
 
+          this.ValuesBean[name] = items;
+          this.ItemIsNew[name] = true
+          console.log(this.ValuesBean[name]);
+        }
+      })
+    }
     return TreeviewConfig.create(fig);
   }
 }

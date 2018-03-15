@@ -447,7 +447,7 @@ export class CommonService {
 
 
 
-  Confirm(title, messageList:Array<any>, buttons = null, inputs = []) {
+  Confirm(title, messageList: Array<any>, buttons = null, inputs = []) {
 
     if (buttons == null) {
       buttons = [
@@ -528,7 +528,7 @@ export class CommonService {
    */
   JsonToTreeJson(_inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>) {
     if (checkValueArr == null) checkValueArr = []
-    let inJson=JSON.parse(JSON.stringify(_inJson))
+    let inJson = JSON.parse(JSON.stringify(_inJson))
     console.log("开始 JSON 转 treeview的绑定对象")
     console.log(_inJson)
     console.log(valueField)
@@ -579,5 +579,24 @@ export class CommonService {
       }
     }
     return inJson;
+  }
+
+  TreeJsonToArrJson(_inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>, level: number = 0) {
+    let reList = []
+    let fiex = ""
+    for (let index = 0; index < level; index++) {
+      fiex = fiex + "　"
+    }
+    for (let index = 0; index < _inJson.length; index++) {
+      const element = _inJson[index];
+      reList.push({ "text": fiex + element[textField], "value": element[valueField] })
+      if (element[childrenField] != null && element[childrenField].length != 0) {
+        let child = this.TreeJsonToArrJson(element[childrenField], valueField, textField, childrenField, checkValueArr, level + 1)
+        child.forEach(element => {
+          reList.push(element)
+        });
+      }
+    }
+    return reList
   }
 }
