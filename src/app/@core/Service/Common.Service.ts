@@ -275,16 +275,28 @@ export class CommonService {
     if (title == null || title == '') {
       title = this.translate.instant("public.title");
     }
-    console.log(msg)
+
+    let buttons = [
+      {
+        name: "确定",
+        click: (e): Promise<any> => {
+          return new Promise((resolver, reject) => {
+            resolver("OkText")
+          })
+        }
+      }
+    ]
+
     const initialState = {
-      list: [msg.replace(/\\r\\n/g, "<br />")],
-      title: title.replace(/\r/g, "<br />"),
-      closeBtnName: [this.translate.instant("public.Okay")]
+      "title": title.replace(/\r/g, "<br />"),
+      "messageList": [msg.replace(/\\r\\n/g, "<br />")],
+      "buttons": buttons
     };
 
     this.modalService.config.ignoreBackdropClick = true;
+    console.log(initialState)
 
-    let bsModalRef = this.modalService.show(ModalConfirmPage, { initialState });
+    let modalRef = this.modalService.show(ModalConfirmPage, { initialState, "class": 'modal-sm', });
 
   }
 
@@ -481,24 +493,7 @@ export class CommonService {
     console.log(initialState)
 
     let modalRef = this.modalService.show(ModalConfirmPage, { initialState, "class": 'modal-sm', });
-    // modalRef.content.message = message
-    // modalRef.content.OkText = OkText
-    // modalRef.content.ChancelText = ChancelText
-    // modalRef.content.inputs = inputs
-    // if (inputs.length > 0) {
-    //   inputs.forEach(element => {
-    //     modalRef.content.bean[element.name] = element.value
-    //   });
-    // }
-    // modalRef.content.OkHandler = (x) => {
-    //   modalRef.hide()
-    //   OkHandler(x)
-    // }
 
-    // modalRef.content.CancelHandler = (x) => {
-    //   modalRef.hide()
-    //   CancelHandler(x)
-    // }
   }
   /**
    * 
@@ -507,15 +502,39 @@ export class CommonService {
    * @param OkHandler 
    * @param OkText 
    */
-  Alert(title, message, OkHandler, OkText = "确定") {
+  Alert(title, msg, OkHandler, OkText = "确定") {
 
-    const activeModal = this.modalService.show(ModalConfirmPage, {
-      backdrop: 'static',
-    });
+    if (msg == null || msg == '') {
+      return;
+    }
+    if (title == null || title == '') {
+      title = this.translate.instant("public.title");
+    }
 
-    activeModal.content.modalHeader = title.replace(/\r/g, "<br />");
-    activeModal.content.modalContent = message.replace(/\\r\\n/g, "<br />")
-    activeModal.content.buttonName = [this.translate.instant("public.Okay")]
+    let buttons = [
+      {
+        name: OkText,
+        click: (e): Promise<any> => {
+          return new Promise((resolver, reject) => {
+            OkHandler
+            resolver("OkText")
+          })
+        }
+      }
+    ]
+
+    const initialState = {
+      "title": title.replace(/\r/g, "<br />"),
+      "messageList": [msg.replace(/\\r\\n/g, "<br />")],
+      "buttons": buttons
+    };
+
+    this.modalService.config.ignoreBackdropClick = true;
+    console.log(initialState)
+
+    let modalRef = this.modalService.show(ModalConfirmPage, { initialState, "class": 'modal-sm', });
+
+
 
   }
   /**
@@ -540,17 +559,22 @@ export class CommonService {
     for (let index = inJson.length - 1; index >= 0; index--) {
       const element = inJson[index];
       if (element[childrenField] == null || element[childrenField] == "") {
-        reArr.push({ text: element[textField], value: element[valueField], checked: checkValueArr.indexOf(element[valueField]) > -1 })
+        reArr.unshift({ text: element[textField], value: element[valueField], checked: checkValueArr.indexOf(element[valueField]) > -1 })
         inJson.splice(index, 1)
       }
     }
     //添加4级子菜单
-    for (let index = 0; index < 4; index++) {
-      for (let index = inJson.length - 1; index >= 0; index--) {
+    for (let a = 0; a < 8; a++) {
+      let maxLeng = inJson.length
+      for (let index = 0; index < maxLeng; index++) {
         const element = inJson[index];
         if (element[childrenField] != null && element[childrenField] != "") {
-          reArr = this.JsonToTreeJsonAddChildren(reArr, element, textField, valueField, childrenField, checkValueArr)
-          inJson.splice(index, 1)
+          let issuse = this.JsonToTreeJsonAddChildren(reArr, element, textField, valueField, childrenField, checkValueArr)
+          if (issuse) {
+            inJson.splice(index, 1)
+            maxLeng--
+            index--
+          }
         }
       }
     }
@@ -559,26 +583,39 @@ export class CommonService {
     console.log(reArr)
     return reArr;
   }
+  /**
+   * 
+   * @param inJson 待完成的项
+   * @param addJson 需要添加的项
+   * @param textField 
+   * @param valueField 
+   * @param childrenField 
+   * @param checkValueArr 
+   */
   JsonToTreeJsonAddChildren(inJson: Array<any>, addJson: any, textField: string, valueField: string, childrenField: string, checkValueArr: Array<any>) {
+
     if (inJson == null) {
       inJson = []
     }
     if (addJson == null || addJson[valueField] == null || addJson[valueField] == "") {
-      return inJson;
+      return false;
     }
+    //循环现在的项
     for (let index = 0; index < inJson.length; index++) {
       const element = inJson[index];
       if (element["value"] == addJson[childrenField]) {
         if (element["children"] == null) element["children"] = [];
-        inJson[index]["children"].push({ text: addJson[textField], value: addJson[valueField], checked: checkValueArr.indexOf(addJson[valueField]) > -1 })
+        inJson[index]["children"].unshift({ text: addJson[textField], value: addJson[valueField], checked: checkValueArr.indexOf(addJson[valueField]) > -1 })
+        return true
       }
-      else {
-        if (element["children"] != null) {
-          inJson[index]["children"] = this.JsonToTreeJsonAddChildren(element["children"], addJson, textField, valueField, childrenField, checkValueArr)
+      else if (element["children"] != null) {
+        //只要添加成功就退出，否则就继续查找
+        if(this.JsonToTreeJsonAddChildren(element["children"], addJson, textField, valueField, childrenField, checkValueArr)){ 
+          return true
         }
       }
     }
-    return inJson;
+    return false;
   }
 
   TreeJsonToArrJson(_inJson: Array<any>, valueField, textField, childrenField, checkValueArr: Array<any>, level: number = 0) {

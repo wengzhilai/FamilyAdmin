@@ -143,7 +143,7 @@ export class EditComponent {
       this.isLoad[name] = true
       this.toPostService.Post(dataFig.api, dataFig.config).then(data => {
         if (data.IsSuccess) {
-          let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", this.bean[name]);
+          let allItem = this.commonService.JsonToTreeJson(data.Data, "ID", "NAME", "PARENT_ID", [this.bean[name]]);
           const items = this.commonService.TreeJsonToArrJson(allItem, "value", "text", "children", [""])
 
           this.ValuesBean[name] = items;
